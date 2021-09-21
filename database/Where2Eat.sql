@@ -5,7 +5,7 @@
 -- Dumped from database version 13.4 (Debian 13.4-1.pgdg100+1)
 -- Dumped by pg_dump version 13.4
 
--- Started on 2021-09-21 02:10:23
+-- Started on 2021-09-21 02:13:55
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -20,7 +20,7 @@ SET row_security = off;
 
 DROP DATABASE where2eat;
 --
--- TOC entry 2971 (class 1262 OID 24591)
+-- TOC entry 2977 (class 1262 OID 24591)
 -- Name: where2eat; Type: DATABASE; Schema: -; Owner: -
 --
 
@@ -64,10 +64,10 @@ SET default_table_access_method = heap;
 
 --
 -- TOC entry 203 (class 1259 OID 24611)
--- Name: Restaurant; Type: TABLE; Schema: public; Owner: -
+-- Name: Restaurants; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public."Restaurant" (
+CREATE TABLE public."Restaurants" (
     _id bigint NOT NULL,
     name character varying(255) NOT NULL,
     image_url text,
@@ -97,12 +97,12 @@ CREATE SEQUENCE public."Restaurant__id_seq"
 
 
 --
--- TOC entry 2972 (class 0 OID 0)
+-- TOC entry 2978 (class 0 OID 0)
 -- Dependencies: 202
 -- Name: Restaurant__id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE public."Restaurant__id_seq" OWNED BY public."Restaurant"._id;
+ALTER SEQUENCE public."Restaurant__id_seq" OWNED BY public."Restaurants"._id;
 
 
 --
@@ -133,7 +133,7 @@ CREATE SEQUENCE public."Users__id_seq"
 
 
 --
--- TOC entry 2973 (class 0 OID 0)
+-- TOC entry 2979 (class 0 OID 0)
 -- Dependencies: 200
 -- Name: Users__id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
@@ -169,7 +169,7 @@ CREATE SEQUENCE public."Visits__id_seq"
 
 
 --
--- TOC entry 2974 (class 0 OID 0)
+-- TOC entry 2980 (class 0 OID 0)
 -- Dependencies: 204
 -- Name: Visits__id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
@@ -179,10 +179,10 @@ ALTER SEQUENCE public."Visits__id_seq" OWNED BY public."Visits"._id;
 
 --
 -- TOC entry 2820 (class 2604 OID 24614)
--- Name: Restaurant _id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: Restaurants _id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public."Restaurant" ALTER COLUMN _id SET DEFAULT nextval('public."Restaurant__id_seq"'::regclass);
+ALTER TABLE ONLY public."Restaurants" ALTER COLUMN _id SET DEFAULT nextval('public."Restaurant__id_seq"'::regclass);
 
 
 --
@@ -202,11 +202,68 @@ ALTER TABLE ONLY public."Visits" ALTER COLUMN _id SET DEFAULT nextval('public."V
 
 
 --
--- TOC entry 2829 (class 2606 OID 24622)
--- Name: Restaurant Restaurant_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 2969 (class 0 OID 24611)
+-- Dependencies: 203
+-- Data for Name: Restaurants; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public."Restaurant"
+COPY public."Restaurants" (_id, name, image_url, price, location, category, "first_visitAt", "last_visitAt", user_id, visits, ratings, review_count) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2967 (class 0 OID 24594)
+-- Dependencies: 201
+-- Data for Name: Users; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public."Users" (_id, name, spent, total_visits, total_restaurants) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2971 (class 0 OID 24630)
+-- Dependencies: 205
+-- Data for Name: Visits; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public."Visits" (_id, user_id, restaurant_id, spent, visit_at) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2981 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: Restaurant__id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public."Restaurant__id_seq"', 1, false);
+
+
+--
+-- TOC entry 2982 (class 0 OID 0)
+-- Dependencies: 200
+-- Name: Users__id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public."Users__id_seq"', 1, false);
+
+
+--
+-- TOC entry 2983 (class 0 OID 0)
+-- Dependencies: 204
+-- Name: Visits__id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public."Visits__id_seq"', 1, false);
+
+
+--
+-- TOC entry 2829 (class 2606 OID 24622)
+-- Name: Restaurants Restaurant_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Restaurants"
     ADD CONSTRAINT "Restaurant_pkey" PRIMARY KEY (_id);
 
 
@@ -242,15 +299,15 @@ CREATE TRIGGER trig_total_visits AFTER INSERT OR DELETE OR UPDATE ON public."Vis
 --
 
 ALTER TABLE ONLY public."Visits"
-    ADD CONSTRAINT restaurant_id FOREIGN KEY (restaurant_id) REFERENCES public."Restaurant"(_id);
+    ADD CONSTRAINT restaurant_id FOREIGN KEY (restaurant_id) REFERENCES public."Restaurants"(_id);
 
 
 --
 -- TOC entry 2832 (class 2606 OID 24623)
--- Name: Restaurant user_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: Restaurants user_id; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public."Restaurant"
+ALTER TABLE ONLY public."Restaurants"
     ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public."Users"(_id);
 
 
@@ -263,7 +320,7 @@ ALTER TABLE ONLY public."Visits"
     ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public."Users"(_id);
 
 
--- Completed on 2021-09-21 02:10:23
+-- Completed on 2021-09-21 02:13:56
 
 --
 -- PostgreSQL database dump complete
