@@ -5,7 +5,29 @@
 -- Dumped from database version 13.4 (Debian 13.4-1.pgdg100+1)
 -- Dumped by pg_dump version 13.4
 
--- Started on 2021-09-21 02:04:59
+-- Started on 2021-09-21 02:10:23
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+DROP DATABASE where2eat;
+--
+-- TOC entry 2971 (class 1262 OID 24591)
+-- Name: where2eat; Type: DATABASE; Schema: -; Owner: -
+--
+
+CREATE DATABASE where2eat WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE = 'en_US.utf8';
+
+
+\connect where2eat
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -19,27 +41,8 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 3 (class 2615 OID 2200)
--- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
---
-
-CREATE SCHEMA public;
-
-
-ALTER SCHEMA public OWNER TO postgres;
-
---
--- TOC entry 2971 (class 0 OID 0)
--- Dependencies: 3
--- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
---
-
-COMMENT ON SCHEMA public IS 'standard public schema';
-
-
---
 -- TOC entry 206 (class 1255 OID 24650)
--- Name: function_total_visits(); Type: FUNCTION; Schema: public; Owner: postgres
+-- Name: function_total_visits(); Type: FUNCTION; Schema: public; Owner: -
 --
 
 CREATE FUNCTION public.function_total_visits() RETURNS trigger
@@ -57,15 +60,11 @@ END;
 $$;
 
 
-ALTER FUNCTION public.function_total_visits() OWNER TO postgres;
-
-SET default_tablespace = '';
-
 SET default_table_access_method = heap;
 
 --
 -- TOC entry 203 (class 1259 OID 24611)
--- Name: Restaurant; Type: TABLE; Schema: public; Owner: postgres
+-- Name: Restaurant; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public."Restaurant" (
@@ -84,11 +83,9 @@ CREATE TABLE public."Restaurant" (
 );
 
 
-ALTER TABLE public."Restaurant" OWNER TO postgres;
-
 --
 -- TOC entry 202 (class 1259 OID 24609)
--- Name: Restaurant__id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: Restaurant__id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public."Restaurant__id_seq"
@@ -99,12 +96,10 @@ CREATE SEQUENCE public."Restaurant__id_seq"
     CACHE 1;
 
 
-ALTER TABLE public."Restaurant__id_seq" OWNER TO postgres;
-
 --
 -- TOC entry 2972 (class 0 OID 0)
 -- Dependencies: 202
--- Name: Restaurant__id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: Restaurant__id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public."Restaurant__id_seq" OWNED BY public."Restaurant"._id;
@@ -112,7 +107,7 @@ ALTER SEQUENCE public."Restaurant__id_seq" OWNED BY public."Restaurant"._id;
 
 --
 -- TOC entry 201 (class 1259 OID 24594)
--- Name: Users; Type: TABLE; Schema: public; Owner: postgres
+-- Name: Users; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public."Users" (
@@ -124,11 +119,9 @@ CREATE TABLE public."Users" (
 );
 
 
-ALTER TABLE public."Users" OWNER TO postgres;
-
 --
 -- TOC entry 200 (class 1259 OID 24592)
--- Name: Users__id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: Users__id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public."Users__id_seq"
@@ -139,12 +132,10 @@ CREATE SEQUENCE public."Users__id_seq"
     CACHE 1;
 
 
-ALTER TABLE public."Users__id_seq" OWNER TO postgres;
-
 --
 -- TOC entry 2973 (class 0 OID 0)
 -- Dependencies: 200
--- Name: Users__id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: Users__id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public."Users__id_seq" OWNED BY public."Users"._id;
@@ -152,7 +143,7 @@ ALTER SEQUENCE public."Users__id_seq" OWNED BY public."Users"._id;
 
 --
 -- TOC entry 205 (class 1259 OID 24630)
--- Name: Visits; Type: TABLE; Schema: public; Owner: postgres
+-- Name: Visits; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public."Visits" (
@@ -164,11 +155,9 @@ CREATE TABLE public."Visits" (
 );
 
 
-ALTER TABLE public."Visits" OWNER TO postgres;
-
 --
 -- TOC entry 204 (class 1259 OID 24628)
--- Name: Visits__id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: Visits__id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public."Visits__id_seq"
@@ -179,12 +168,10 @@ CREATE SEQUENCE public."Visits__id_seq"
     CACHE 1;
 
 
-ALTER TABLE public."Visits__id_seq" OWNER TO postgres;
-
 --
 -- TOC entry 2974 (class 0 OID 0)
 -- Dependencies: 204
--- Name: Visits__id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: Visits__id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public."Visits__id_seq" OWNED BY public."Visits"._id;
@@ -192,7 +179,7 @@ ALTER SEQUENCE public."Visits__id_seq" OWNED BY public."Visits"._id;
 
 --
 -- TOC entry 2820 (class 2604 OID 24614)
--- Name: Restaurant _id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: Restaurant _id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public."Restaurant" ALTER COLUMN _id SET DEFAULT nextval('public."Restaurant__id_seq"'::regclass);
@@ -200,7 +187,7 @@ ALTER TABLE ONLY public."Restaurant" ALTER COLUMN _id SET DEFAULT nextval('publi
 
 --
 -- TOC entry 2819 (class 2604 OID 24597)
--- Name: Users _id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: Users _id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public."Users" ALTER COLUMN _id SET DEFAULT nextval('public."Users__id_seq"'::regclass);
@@ -208,7 +195,7 @@ ALTER TABLE ONLY public."Users" ALTER COLUMN _id SET DEFAULT nextval('public."Us
 
 --
 -- TOC entry 2824 (class 2604 OID 24633)
--- Name: Visits _id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: Visits _id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public."Visits" ALTER COLUMN _id SET DEFAULT nextval('public."Visits__id_seq"'::regclass);
@@ -216,7 +203,7 @@ ALTER TABLE ONLY public."Visits" ALTER COLUMN _id SET DEFAULT nextval('public."V
 
 --
 -- TOC entry 2829 (class 2606 OID 24622)
--- Name: Restaurant Restaurant_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: Restaurant Restaurant_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public."Restaurant"
@@ -225,7 +212,7 @@ ALTER TABLE ONLY public."Restaurant"
 
 --
 -- TOC entry 2827 (class 2606 OID 24602)
--- Name: Users Users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: Users Users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public."Users"
@@ -234,7 +221,7 @@ ALTER TABLE ONLY public."Users"
 
 --
 -- TOC entry 2831 (class 2606 OID 24639)
--- Name: Visits Visits_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: Visits Visits_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public."Visits"
@@ -243,7 +230,7 @@ ALTER TABLE ONLY public."Visits"
 
 --
 -- TOC entry 2835 (class 2620 OID 24651)
--- Name: Visits trig_total_visits; Type: TRIGGER; Schema: public; Owner: postgres
+-- Name: Visits trig_total_visits; Type: TRIGGER; Schema: public; Owner: -
 --
 
 CREATE TRIGGER trig_total_visits AFTER INSERT OR DELETE OR UPDATE ON public."Visits" FOR EACH ROW EXECUTE FUNCTION public.function_total_visits();
@@ -251,7 +238,7 @@ CREATE TRIGGER trig_total_visits AFTER INSERT OR DELETE OR UPDATE ON public."Vis
 
 --
 -- TOC entry 2834 (class 2606 OID 24645)
--- Name: Visits restaurant_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: Visits restaurant_id; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public."Visits"
@@ -260,7 +247,7 @@ ALTER TABLE ONLY public."Visits"
 
 --
 -- TOC entry 2832 (class 2606 OID 24623)
--- Name: Restaurant user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: Restaurant user_id; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public."Restaurant"
@@ -269,14 +256,14 @@ ALTER TABLE ONLY public."Restaurant"
 
 --
 -- TOC entry 2833 (class 2606 OID 24640)
--- Name: Visits user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: Visits user_id; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public."Visits"
     ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public."Users"(_id);
 
 
--- Completed on 2021-09-21 02:04:59
+-- Completed on 2021-09-21 02:10:23
 
 --
 -- PostgreSQL database dump complete
