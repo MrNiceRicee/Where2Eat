@@ -1,0 +1,29 @@
+{
+  "name": "where2eat_backend",
+  "version": "1.0.0",
+  "description": "where2eat backend service",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start-dev": "nodemon server",
+    "start": "node server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MrNiceRicee/Where2Eat.git"
+  },
+  "author": "Joshua Santos",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MrNiceRicee/Where2Eat/issues"
+  },
+  "homepage": "https://github.com/MrNiceRicee/Where2Eat#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.13",
+    "pg": "^8.7.1",
+    "sql-template-strings": "^2.2.2"
+  }
+}
