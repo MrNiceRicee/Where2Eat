@@ -1,0 +1,17 @@
+{
+  "name": "where2eatsql",
+  "version": "1.0.0",
+  "description": "creates databases",
+  "main": "index.js",
+  "scripts": {
+    "sync-main": "node ./create/main.js",
+    "sync-test": "node ./create/test.js",
+    "drop-main": "node ./drop/main.js",
+    "drop-test": "node ./drop/test.js"
+  },
+  "author": "Joshua Santos",
+  "license": "MIT",
+  "dependencies": {
+    "pg": "^8.7.1"
+  }
+}

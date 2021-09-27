@@ -1,49 +1,4 @@
---
--- PostgreSQL database dump
---
 
--- Dumped from database version 13.4 (Debian 13.4-1.pgdg100+1)
--- Dumped by pg_dump version 13.4
-
--- Started on 2021-09-22 23:42:42
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
-
-DROP DATABASE where2eat;
---
--- TOC entry 2972 (class 1262 OID 24591)
--- Name: where2eat; Type: DATABASE; Schema: -; Owner: -
---
-
-CREATE DATABASE where2eat WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE = 'en_US.utf8';
-
-
-\connect where2eat
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
-
---
--- TOC entry 207 (class 1255 OID 24708)
--- Name: function_total_restaurants(); Type: FUNCTION; Schema: public; Owner: -
---
 
 CREATE FUNCTION public.function_total_restaurants() RETURNS trigger
     LANGUAGE plpgsql
@@ -126,7 +81,7 @@ CREATE TABLE public."Restaurants" (
 
 CREATE TABLE public."Users" (
     _id bigint NOT NULL,
-    name character varying NOT NULL,
+    name character varying UNIQUE NOT NULL,
     total_visits integer DEFAULT 0,
     total_visited_restaurants integer DEFAULT 0,
     spent numeric DEFAULT 0
