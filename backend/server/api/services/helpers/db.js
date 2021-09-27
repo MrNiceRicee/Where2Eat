@@ -1,9 +1,11 @@
 const { Pool } = require('pg');
 
+const currentENV = process.env.RUN_ENV;
+
 const pool = new Pool({
   user: 'postgres',
   password: 'password',
-  database: 'where2eat',
+  database: currentENV === 'test' ? 'where2eat_test' : 'where2eat',
 });
 
 /**

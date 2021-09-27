@@ -4,7 +4,7 @@
   "description": "where2eat backend service",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "export RUN_ENV=test; jest ",
     "start-dev": "nodemon server",
     "start": "node server"
   },
@@ -19,11 +19,15 @@
   },
   "homepage": "https://github.com/MrNiceRicee/Where2Eat#readme",
   "dependencies": {
+    "@types/jest": "^27.0.2",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.13",
     "pg": "^8.7.1",
     "sql-template-strings": "^2.2.2"
+  },
+  "devDependencies": {
+    "jest": "^27.2.2"
   }
 }
