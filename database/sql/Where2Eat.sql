@@ -81,10 +81,12 @@ CREATE TABLE public."Restaurants" (
 
 CREATE TABLE public."Users" (
     _id bigint NOT NULL,
-    name character varying UNIQUE NOT NULL,
+    name character varying(255) UNIQUE NOT NULL,
     total_visits integer DEFAULT 0,
     total_visited_restaurants integer DEFAULT 0,
-    spent numeric DEFAULT 0
+    spent numeric DEFAULT 0,
+    budget numeric DEFAULT 0,
+    budget_time character varying(255) DEFAULT 'weekly'
 );
 
 

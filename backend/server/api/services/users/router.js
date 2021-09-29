@@ -10,6 +10,8 @@ const routes = (router, prefix) => {
 
   // update user
   router.put(`${prefix}/:id`, controller.update)
+
+  router.delete(`${prefix}/:id`, controller.deleteItem)
 };
 
 module.exports = routes;

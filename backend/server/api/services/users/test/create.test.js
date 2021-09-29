@@ -19,7 +19,7 @@ describe('Users Create', () => {
     );
   });
 
-  test('One in DB', async () => {
+  test('Check in DB', async () => {
     const result = await queryOne(SQL`SELECT * FROM "Users"`);
     expect(result).toEqual(expect.objectContaining({ name: 'test_one' }));
   });
