@@ -47,6 +47,21 @@ describe('Users Update', () => {
       });
   });
 
+  test('Error no user found', () => {
+    update(-100, { update: { name: 'should fail' } })
+      .then(() => {
+        expect(true).toEqual(false); // just in case it doesn't fail
+      })
+      .catch((err) => {
+        expect(err).toEqual(
+          expect.objectContaining({
+            message: 'No User found',
+            statusCode: 500,
+          })
+        );
+      });
+  });
+
   test('Update name', async () => {
     await update(users.one._id, { update: { name: 'Updated Name' } });
     const find = await queryOne(
@@ -56,11 +71,13 @@ describe('Users Update', () => {
   });
 
   test('Update multiple', async () => {
-    await update(users.one._id, { update: { name: 'Updated Name', budget: 49.99, budget_time: 'weekly' } });
+    await update(users.two._id, {
+      update: { name: 'Updated Name2', budget: 49.99, budget_time: 'weekly' },
+    });
     const find = await queryOne(
-      SQL`SELECT * FROM "Users" WHERE "_id"=${users.one._id}`
+      SQL`SELECT * FROM "Users" WHERE "_id"=${users.two._id}`
     );
-    expect(find.name).toEqual('Updated Name');
+    expect(find.name).toEqual('Updated Name2');
     expect(find.budget).toEqual('49.99');
     expect(find.budget_time).toEqual('weekly');
   });

@@ -2,7 +2,7 @@ const { handleError, handleResponse } = require('../helpers');
 const all = require('./all');
 const create = require('./create');
 const update = require('./update');
-const deleteItem = require('./delete');
+const deleteItem = require('./deleteItem');
 
 exports.all = (req, res) => {
   all().then(handleResponse(res)).catch(handleError(res));

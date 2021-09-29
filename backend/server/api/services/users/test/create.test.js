@@ -3,7 +3,6 @@ const create = require('../create');
 const { queryOne, query } = require('../../helpers');
 
 describe('Users Create', () => {
-  let users = {};
   beforeAll(async () => {});
 
   afterAll(async () => {
