@@ -6,7 +6,6 @@ const create = async ({ name } = {}) => {
   const query = SQL`
     INSERT INTO "Users" ("name")
       VALUES(${name})
-      RETURNING *
     `;
   await queryOne(query);
   return {

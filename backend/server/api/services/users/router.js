@@ -6,7 +6,10 @@ const routes = (router, prefix) => {
   router.get(`${prefix}/all`, controller.all);
 
   // create user
-  router.post(`${prefix}/create`, auth, controller.create);
+  router.post(`${prefix}`, auth, controller.create);
+
+  // update user
+  router.put(`${prefix}/:id`, controller.update)
 };
 
 module.exports = routes;
