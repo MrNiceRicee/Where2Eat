@@ -24,7 +24,13 @@ exports.deleteItem = (req, res) => {
 };
 
 exports.search = (req, res) => {
-  search({ id: req.params.id, ...req.query })
+  search(req.query)
+    .then(handleResponse(res, 200))
+    .catch(handleError(res));
+};
+
+exports.find = (req, res) => {
+  search({ name: req.params.name, strict: true })
     .then(handleResponse(res, 200))
     .catch(handleError(res));
 };

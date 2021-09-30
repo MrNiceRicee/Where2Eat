@@ -51,4 +51,14 @@ describe('Users Search', () => {
       })
     );
   });
+
+  test('Search one strict', async () => {
+    const result = await search({ name: 'test_user2', strict: true });
+    expect(result).toEqual(
+      expect.objectContaining({
+        total: 1,
+        data: expect.arrayContaining([users.two]),
+      })
+    );
+  });
 });

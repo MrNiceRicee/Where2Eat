@@ -6,8 +6,8 @@ const routes = (router, prefix) => {
   router.get(`${prefix}/all`, controller.all);
 
   // get some users
-  router.get(`${prefix}/:id`, controller.search)
-  router.get(`${prefix}/`, controller.search)
+  router.get(`${prefix}/search`, controller.search)
+  router.get(`${prefix}/:name`, controller.find)
 
   // create user
   router.post(`${prefix}`, auth, controller.create);
