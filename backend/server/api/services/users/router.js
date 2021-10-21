@@ -10,7 +10,7 @@ const routes = (router, prefix) => {
   router.get(`${prefix}/:name`, controller.find)
 
   // create user
-  router.post(`${prefix}`, auth, controller.create);
+  router.post(`${prefix}/create`, auth, controller.create);
 
   // update user
   router.put(`${prefix}/:id`, controller.update)
