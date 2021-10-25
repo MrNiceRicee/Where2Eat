@@ -4,7 +4,7 @@
   "description": "where2eat backend service",
   "main": "index.js",
   "scripts": {
-    "test": "export RUN_ENV=test; jest ",
+    "test": "export RUN_ENV=test; jest --bail",
     "start-dev": "nodemon server",
     "start": "node server"
   },

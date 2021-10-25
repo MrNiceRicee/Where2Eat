@@ -35,4 +35,7 @@ const search = async ({
   };
 };
 
-module.exports = search;
+module.exports = {
+  search,
+  yelpSearch,
+};
