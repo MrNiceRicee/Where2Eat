@@ -1,9 +1,5 @@
 const { handleError, handleResponse } = require('../helpers');
-const all = require('./all');
-const create = require('./create');
-const update = require('./update');
-const deleteItem = require('./deleteItem');
-const search = require('./search');
+const { all, create, update, deleteItem, search } = require('./jobs');
 
 exports.all = (req, res) => {
   all().then(handleResponse(res)).catch(handleError(res));

@@ -70,7 +70,8 @@ CREATE TABLE public."Restaurants" (
     category text[],
     price character varying,
     rating numeric DEFAULT 0,
-    review_count integer DEFAULT 0
+    review_count integer DEFAULT 0,
+    url text
 );
 
 

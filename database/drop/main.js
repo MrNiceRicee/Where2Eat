@@ -1,21 +1,14 @@
-const fs = require('fs');
-const path = require('path');
 const { Pool } = require('pg');
+const { main } = require('./config');
 
-const pool = new Pool({
-  user: 'postgres',
-  password: 'password',
-  database: 'where2eat',
-  port: 5432,
-  host: 'localhost',
-});
+const pool = new Pool(main);
 
 const sync = async () => {
   try {
     await pool.query(`
       DROP SCHEMA IF EXISTS public CASCADE;
       CREATE SCHEMA public;
-    `)
+    `);
   } catch (err) {
     console.log('error', err);
     console.log('err', err.message);

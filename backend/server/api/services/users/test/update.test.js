@@ -1,10 +1,11 @@
 const SQL = require('sql-template-strings');
-const update = require('../update');
+const { update } = require('../jobs');
 const { queryOne, query } = require('../../helpers');
+const { expect } = require('chai');
 
 describe('Users Update', () => {
   let users = {};
-  beforeAll(async () => {
+  beforeEach(async () => {
     users.one = await queryOne(
       SQL`INSERT INTO "Users" ("name") VALUES('test_user1') RETURNING *`
     );
@@ -13,72 +14,66 @@ describe('Users Update', () => {
     );
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await query(SQL`DELETE FROM "Users"`);
   });
 
-  test('Error no ID', () => {
+  it('Error no ID', () => {
     update()
       .then(() => {
-        expect(true).toEqual(false); // just in case it doesn't fail
+        expect(true).to.be.false; // just in case it doesn't fail
       })
       .catch((err) => {
-        expect(err).toEqual(
-          expect.objectContaining({
-            message: 'Missing ID',
-            statusCode: 500,
-          })
-        );
+        expect(err).to.deep.equal({
+          message: 'Missing ID',
+          statusCode: 400,
+        });
       });
   });
 
-  test('Error no update package', () => {
+  it('Error no update package', () => {
     update(users.one._id)
       .then(() => {
-        expect(true).toEqual(false); // just in case it doesn't fail
+        expect(true).to.be.false; // just in case it doesn't fail
       })
       .catch((err) => {
-        expect(err).toEqual(
-          expect.objectContaining({
-            message: 'Missing update package',
-            statusCode: 500,
-          })
-        );
+        expect(err).to.deep.equal({
+          message: 'Missing update package',
+          statusCode: 400,
+        });
       });
   });
 
-  test('Error no user found', () => {
+  it('Error no user found', () => {
     update(-100, { update: { name: 'should fail' } })
       .then(() => {
-        expect(true).toEqual(false); // just in case it doesn't fail
+        expect(true).to.be.false; // just in case it doesn't fail
       })
       .catch((err) => {
-        expect(err).toEqual(
-          expect.objectContaining({
-            message: 'No User found',
-            statusCode: 500,
-          })
-        );
+        expect(err).to.deep.equal({
+          message: 'No User found',
+          statusCode: 500,
+        });
       });
   });
 
-  test('Update name', async () => {
+  it('Update name', async () => {
     await update(users.one._id, { update: { name: 'Updated Name' } });
     const find = await queryOne(
       SQL`SELECT * FROM "Users" WHERE "_id"=${users.one._id}`
     );
-    expect(find.name).toEqual('Updated Name');
+    expect(find.name).to.equal('Updated Name');
   });
 
-  test('Update multiple', async () => {
+  it('Update multiple', async () => {
     await update(users.two._id, {
       update: { name: 'Updated Name2', budget: 49.99, budget_time: 'weekly' },
     });
     const find = await queryOne(
       SQL`SELECT * FROM "Users" WHERE "_id"=${users.two._id}`
     );
-    expect(find.name).toEqual('Updated Name2');
-    expect(find.budget).toEqual('49.99');
-    expect(find.budget_time).toEqual('weekly');
+    expect(find.name).to.equal('Updated Name2');
+    expect(find.budget).to.equal('49.99');
+    expect(find.budget_time).to.equal('weekly');
   });
 });

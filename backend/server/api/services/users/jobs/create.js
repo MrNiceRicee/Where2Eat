@@ -2,11 +2,11 @@ const SQL = require('sql-template-strings');
 const { queryOne, ErrorException } = require('../../helpers');
 
 const create = async ({ name } = {}) => {
-  if (!name) throw new ErrorException('Missing name', 500);
+  if (!name) throw new ErrorException('Missing Name', 400);
   const query = SQL`
-    INSERT INTO "Restaurant" ("name")
+    INSERT INTO "Users" ("name")
       VALUES(${name})
-    RETURNING *
+    RETURNING "name", "total_visits", "total_visited_restaurants", "spent", "budget", "budget_time";
     `;
   const res = await queryOne(query);
   return res;

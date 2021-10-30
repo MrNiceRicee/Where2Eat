@@ -1,4 +1,4 @@
-const all = require('./all');
+const { all } = require('./jobs');
 const { handleError, handleResponse } = require('../helpers');
 
 exports.all = (req, res) => {

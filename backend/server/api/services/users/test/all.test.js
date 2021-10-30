@@ -1,10 +1,11 @@
 const SQL = require('sql-template-strings');
-const all = require('../all');
+const { all } = require('../jobs');
 const { queryOne, query } = require('../../helpers');
+const { expect } = require('chai');
 
 describe('Users All', () => {
   let users = {};
-  beforeAll(async () => {
+  beforeEach(async () => {
     users.one = await queryOne(
       SQL`INSERT INTO "Users" ("name") VALUES('test_user1') RETURNING *`
     );
@@ -13,17 +14,15 @@ describe('Users All', () => {
     );
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await query(SQL`DELETE FROM "Users"`);
   });
 
-  test('shows All', async () => {
+  it('shows All', async () => {
     const result = await all();
-    expect(result).toEqual(
-      expect.objectContaining({
-        total: 2,
-        data: expect.arrayContaining([users.one, users.two]),
-      })
-    );
+    expect(result).to.deep.equal({
+      total: 2,
+      data: [users.one, users.two],
+    });
   });
 });

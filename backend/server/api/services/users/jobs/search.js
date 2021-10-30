@@ -1,9 +1,9 @@
 const SQL = require('sql-template-strings');
-const { queryRows, ErrorException } = require('../helpers');
+const { queryRows, ErrorException } = require('../../helpers');
 
 const search = async ({ id, name, strict = false } = {}) => {
 
-  if (!id && !name) throw new ErrorException('Missing search requirements', 500);
+  if (!id && !name) throw new ErrorException('Missing search requirements', 400);
 
   const query = SQL`SELECT * FROM "Users" `;
   const filter = SQL`WHERE 1=1`

@@ -1,10 +1,11 @@
 const SQL = require('sql-template-strings');
-const deleteItem = require('../deleteItem');
+const { deleteItem } = require('../jobs');
 const { queryOne, query, queryRows } = require('../../helpers');
+const { expect } = require('chai');
 
 describe('Users Delete Item', () => {
   let users = {};
-  beforeAll(async () => {
+  beforeEach(async () => {
     users.one = await queryOne(
       SQL`INSERT INTO "Users" ("name") VALUES('test_user1') RETURNING *`
     );
@@ -13,56 +14,47 @@ describe('Users Delete Item', () => {
     );
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await query(SQL`DELETE FROM "Users"`);
   });
 
-  test('Error no ID', () => {
+  it('Error no ID', () => {
     deleteItem()
       .then(() => {
-        expect(true).toEqual(false); // just in case it doesn't fail
+        expect(true).to.be.false; // just in case it doesn't fail
       })
       .catch((err) => {
-        expect(err).toEqual(
-          expect.objectContaining({
-            message: 'Missing ID',
-            statusCode: 500,
-          })
-        );
+        expect(err).to.deep.equal({
+          message: 'Missing ID',
+          statusCode: 400,
+        });
       });
   });
 
-  test('Error no user found', () => {
+  it('Error no user found', () => {
     deleteItem(-100, { update: { name: 'should fail' } })
       .then(() => {
-        expect(true).toEqual(false); // just in case it doesn't fail
+        expect(true).to.be.false; // just in case it doesn't fail
       })
       .catch((err) => {
-        expect(err).toEqual(
-          expect.objectContaining({
-            message: 'No User found',
-            statusCode: 500,
-          })
-        );
+        expect(err).to.deep.equal({
+          message: 'No User found',
+          statusCode: 400,
+        });
       });
   });
 
-  test('Delete One', async () => {
+  it('Delete One', async () => {
     const result = await deleteItem(users.one._id);
-    expect(result).toEqual(
-      expect.objectContaining({
-        message: 'Deleted User',
-      })
-    );
+    expect(result).to.deep.equal({
+      message: 'Deleted User',
+    });
   });
 
-  test('Check in DB', async () => {
+  it('Check in DB', async () => {
+    await deleteItem(users.one._id);
     const result = await queryRows(SQL`SELECT * FROM "Users"`);
-    expect(result.length).toEqual(1);
-    expect(result).toEqual(
-      expect.not.objectContaining({
-        name: users.one.name,
-      })
-    );
+    expect(result.length).to.equal(1);
+    expect(result).to.deep.include.members([users.two]);
   });
 });

@@ -1,36 +1,31 @@
 const SQL = require('sql-template-strings');
-const create = require('../create');
+const { create } = require('../jobs');
 const { queryOne, query } = require('../../helpers');
+const { expect } = require('chai');
 
 describe('Users Create', () => {
-  beforeAll(async () => {});
+  beforeEach(async () => {});
 
-  afterAll(async () => {
+  afterEach(async () => {
     await query(SQL`DELETE FROM "Users"`);
   });
 
-  test('Create One', async () => {
+  it('Create One', async () => {
     const result = await create({ name: 'test_one' });
-    expect(result).toEqual(
-      expect.objectContaining({
-        message: 'Created User: test_one',
-      })
-    );
+    expect(result).to.be.a('object');
+    expect(result.name).to.equal('test_one');
   });
 
-  test('Check in DB', async () => {
+  it('Check in DB', async () => {
+    await create({ name: 'test_one' });
     const result = await queryOne(SQL`SELECT * FROM "Users"`);
-    expect(result).toEqual(expect.objectContaining({ name: 'test_one' }));
+    expect(result).to.be.a('object');
+    expect(result.name).to.equal('test_one');
   });
 
-  test('Error no Name', async () => {
+  it('Error no Name', async () => {
     await create().catch((err) => {
-      expect(err).toEqual(
-        expect.objectContaining({
-          message: 'Missing name',
-          statusCode: 500,
-        })
-      );
+      expect(err).to.deep.equal({ message: 'Missing Name', statusCode: 400 });
     });
   });
 });

@@ -1,5 +1,5 @@
 const SQL = require('sql-template-strings');
-const { queryRows } = require('../helpers');
+const { queryRows } = require('../../helpers');
 
 const all = async () => {
   const query = SQL`SELECT * FROM "Users"`;

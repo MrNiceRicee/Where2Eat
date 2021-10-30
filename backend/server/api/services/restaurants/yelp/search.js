@@ -1,7 +1,6 @@
 const axios = require('axios');
 const { ErrorException } = require('../../helpers');
 const { AUTH_YELP } = require('./config');
-const { fakeYelp } = require('../test/fakeYelpData');
 
 const search = async ({
   term,
@@ -18,10 +17,6 @@ const search = async ({
   if (!location && !latitude && !longitude)
     throw new ErrorException('Missing location requirements', 500);
 
-  // fake test so we don't use YELP API :)
-  if (process.env.RUN_ENV === 'test') {
-    return fakeYelp;
-  }
   const yelp = await axios({
     method: 'get',
     url: 'https://api.yelp.com/v3/businesses/search',

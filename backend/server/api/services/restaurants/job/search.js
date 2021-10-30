@@ -1,5 +1,6 @@
 const { ErrorException } = require('../../helpers');
 const { search: yelpSearch } = require('../yelp');
+const { fakeYelp } = require('../test/fakeYelpData');
 
 const search = async ({
   term,
@@ -14,8 +15,13 @@ const search = async ({
   open_now,
 } = {}) => {
   if (!location && !latitude && !longitude)
-    throw new ErrorException('Missing location requirements', 500);
+    throw new ErrorException('Missing location requirements', 400);
 
+
+  // fake test so we don't use YELP API :)
+  if (process.env.RUN_ENV === 'test') {
+    return fakeYelp;
+  }
   const { data, count } = await yelpSearch({
     term,
     location,

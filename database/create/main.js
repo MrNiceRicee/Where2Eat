@@ -1,14 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const { Pool } = require('pg');
+const { main } = require('./config');
 
-const pool = new Pool({
-  user: 'postgres',
-  password: 'password',
-  database: 'where2eat',
-  port: 5432,
-  host: 'localhost',
-});
+const pool = new Pool(main);
 
 const readFile = async (file) => {
   const fileString = fs
@@ -19,8 +14,7 @@ const readFile = async (file) => {
 
 const sync = async () => {
   try {
-    readFile('../sql/Tables.sql');
-    readFile('../sql/Triggers.sql');
+    readFile('../sql/Where2Eat.sql');
   } catch (err) {
     console.log('error', err);
     console.log('err', err.message);
