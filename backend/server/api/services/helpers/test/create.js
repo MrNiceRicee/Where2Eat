@@ -58,11 +58,16 @@ const user = async (name) => {
   return result;
 };
 
-const visit = async(user_id, restaurant_id) => {
-  const query = SQL`INSERT INTO "Visits"("user_id", "restaurant_id", "name")`
+const visit = async(user_id, restaurant_id, spent) => {
+  const query = SQL`
+    INSERT INTO "Visits"("user_id", "restaurant_id", "spent")
+    VALUES(${user_id}, ${restaurant_id}, ${spent || faker.datatype.number(49.99)})
+    RETURNING *`;
+  return await queryOne(query);
 }
 
 module.exports = {
   restaurant,
   user,
+  visit,
 };

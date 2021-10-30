@@ -122,8 +122,6 @@ CREATE TABLE public."Visits" (
     _id bigint NOT NULL,
     user_id integer NOT NULL,
     restaurant_id character varying(255),
-    name character varying(255),
-    image_url text,
     spent numeric DEFAULT 0,
     visited_at timestamp with time zone DEFAULT now()
 );
