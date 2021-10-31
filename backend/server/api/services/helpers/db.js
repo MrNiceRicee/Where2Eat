@@ -1,12 +1,7 @@
 const { Pool } = require('pg');
 
-const currentENV = process.env.RUN_ENV;
-
-const pool = new Pool({
-  user: 'postgres',
-  password: 'password',
-  database: currentENV === 'test' ? 'where2eat_test' : 'where2eat',
-});
+const DBConf = require('./config');
+const pool = new Pool(DBConf);
 
 /**
  * SQL statement expecting only one result
