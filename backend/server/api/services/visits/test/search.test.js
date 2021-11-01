@@ -12,7 +12,7 @@ describe('Visits Search', () => {
     restaurants: {},
   };
   beforeEach(async () => {
-    data.users.one = await helpCreate.user();
+    data.users.one = await helpCreate.user({budget_time: 'daily'});
     data.users.two = await helpCreate.user();
     data.restaurants.one = await helpCreate.restaurant();
     data.restaurants.two = await helpCreate.restaurant();
@@ -20,18 +20,35 @@ describe('Visits Search', () => {
       data.users.one._id,
       data.restaurants.one._id,
       (Math.random() * 49.99).toFixed(2),
-      DateTime.now().minus({ months: 2 }).toISODate()
+      DateTime.now().minus({ months: 1 }).toISODate()
     );
     data.visits.two = await helpCreate.visit(
       data.users.one._id,
       data.restaurants.two._id,
+      (Math.random() * 49.99).toFixed(2)
+    );
+    data.visits.three = await helpCreate.visit(
+      data.users.two._id,
+      data.restaurants.one._id,
+      (Math.random() * 49.99).toFixed(2)
+    );
+    data.visits.four = await helpCreate.visit(
+      data.users.one._id,
+      data.restaurants.one._id,
       (Math.random() * 49.99).toFixed(2),
-      );
-      data.visits.three = await helpCreate.visit(
-        data.users.two._id,
-        data.restaurants.one._id,
-        (Math.random() * 49.99).toFixed(2),
-        DateTime.now().minus({ days: 1 }).toISODate()
+      DateTime.now().toISODate()
+    );
+    data.visits.five = await helpCreate.visit(
+      data.users.one._id,
+      data.restaurants.one._id,
+      (Math.random() * 49.99).toFixed(2),
+      DateTime.now().minus({ days: 1 }).toISODate()
+    );
+    data.visits.six = await helpCreate.visit(
+      data.users.one._id,
+      data.restaurants.one._id,
+      (Math.random() * 49.99).toFixed(2),
+      DateTime.now().minus({ week: 1 }).toISODate()
     );
   });
 
@@ -93,11 +110,22 @@ describe('Visits Search', () => {
     }
   });
 
-  it('success!', async () => {
+  it('success! user default (daily)', async () => {
     const res = await search({
       user_id: data.users.one._id,
       restaurant_id: data.restaurants.one._id,
+      // time: 'monthly',
+    });
+    expect(res.data.Visits.length).to.equal(2);
+  });
+
+  it('success! weekly', async () => {
+    const res = await search({
+      user_id: data.users.one._id,
+      restaurant_id: data.restaurants.one._id,
+      time: 'weekly',
     });
     console.log('data', res.data);
+    expect(res.data.Visits.length).to.equal(3);
   });
 });

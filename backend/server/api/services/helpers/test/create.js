@@ -42,16 +42,19 @@ const restaurant = async () => {
   return result;
 };
 
-const user = async (name) => {
+const user = async ({name, budget, budget_time} = {}) => {
   const time = ['daily', 'weekly', 'monthly'];
   const query = SQL`INSERT INTO "Users"("name", "budget", "budget_time")
   VALUES(
     ${name || faker.name.findName()},
-    ${faker.datatype.number({
-      min: 20,
-      max: 1000,
-    })},
-    ${time[faker.datatype.number(2)]})
+    ${
+      budget ||
+      faker.datatype.number({
+        min: 20,
+        max: 1000,
+      })
+    },
+    ${budget_time || time[faker.datatype.number(2)]})
 
     RETURNING *`;
 
@@ -59,7 +62,7 @@ const user = async (name) => {
   return result;
 };
 
-const visit = async(user_id, restaurant_id, spent, time) => {
+const visit = async (user_id, restaurant_id, spent, time) => {
   // time = time || DateTime.now().toISODate().toLocaleLowerCase('en-US');
   time = time || DateTime.now().toISODate();
   const query = SQL`
@@ -72,7 +75,7 @@ const visit = async(user_id, restaurant_id, spent, time) => {
     )
     RETURNING *`;
   return await queryOne(query);
-}
+};
 
 module.exports = {
   restaurant,

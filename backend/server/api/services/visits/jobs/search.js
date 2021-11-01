@@ -41,6 +41,8 @@ const search = async ({ user_id, restaurant_id, time }) => {
     throw new ErrorException('Restaurant not found', 204);
   }
 
+  // if there is a defined time, go with it unless
+  // go with user's
   time = time || userTime;
 
   const queryVisits = SQL`
@@ -49,12 +51,22 @@ const search = async ({ user_id, restaurant_id, time }) => {
       "visited_at"
     FROM
       "Visits"
-    WHERE "restaurant_id"=${restaurant_id}
+    WHERE 
+      "restaurant_id"=${restaurant_id} AND
+      "user_id"=${user_id}
   `;
+  queryVisits.append(getTime(time));
+  queryVisits.append(SQL`ORDER BY "visited_at" DESC`);
   let visits = await queryRows(queryVisits);
   visits = visits.map((item) => {
-    const newTime = DateTime.fromJSDate(item.visited_at).toFormat('yyyy MMMM dd');
-    item.human_time = DateTime.fromJSDate(item.visited_at).toRelative();
+    const translatedDate = DateTime.fromJSDate(item.visited_at);
+    const newTime = translatedDate.toFormat(
+      'yyyy MMMM dd'
+    );
+    item.human_time = translatedDate.toRelative();
+    if (translatedDate.hasSame(DateTime.now(), 'day')) {
+      item.human_time = 'today';
+    }
     item.visited_at = newTime;
     return item;
   });
@@ -65,6 +77,33 @@ const search = async ({ user_id, restaurant_id, time }) => {
   };
 };
 
-const getTime = (time) => {};
+const getTime = ({ budget_time: time }) => {
+  switch (time) {
+    case 'daily':
+      return SQL` AND "visited_at" >= ${DateTime.now()
+        .minus({ days: 1 })
+        .toISODate()} AND
+        "visited_at" <= ${DateTime.now().toISODate()}  
+      `;
+    case 'weekly':
+      return SQL` AND "visited_at" >= ${DateTime.now()
+        .minus({ weeks: 1 })
+        .toISODate()} AND
+        "visited_at" <= ${DateTime.now().toISODate()}  
+      `;
+    case 'monthly':
+      return SQL` AND "visited_at" >= ${DateTime.now()
+        .minus({ months: 1 })
+        .toISODate()} AND
+        "visited_at" <= ${DateTime.now().toISODate()}  
+      `;
+    default:
+      return SQL` AND "visited_at" >= ${DateTime.now()
+        .minus({ weeks: 1 })
+        .toISODate()} AND
+        "visited_at" <= ${DateTime.now().toISODate()}  
+      `;
+  }
+};
 
 module.exports = search;
