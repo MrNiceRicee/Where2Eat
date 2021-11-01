@@ -123,7 +123,7 @@ CREATE TABLE public."Visits" (
     user_id integer NOT NULL,
     restaurant_id character varying(255),
     spent numeric DEFAULT 0,
-    visited_at timestamp with time zone DEFAULT now()
+    visited_at date DEFAULT NOW()
 );
 
 

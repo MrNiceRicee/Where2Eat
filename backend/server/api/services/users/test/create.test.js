@@ -24,8 +24,14 @@ describe('Users Create', () => {
   });
 
   it('Error no Name', async () => {
-    await create().catch((err) => {
-      expect(err).to.deep.equal({ message: 'Missing Name', statusCode: 400 });
-    });
+    try {
+      await create();
+      expect(true).to.be.false;
+    } catch (err) {
+      expect(err).to.deep.equal({
+        message: 'Missing Name',
+        statusCode: 400,
+      });
+    }
   });
 });

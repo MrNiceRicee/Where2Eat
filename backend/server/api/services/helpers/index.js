@@ -1,6 +1,8 @@
 const { query, queryRows, queryOne } = require('./db');
-const { handleError, handleResponse, ErrorException } = require('./responses');
+const { handleError, handleResponse } = require('./responses');
+const ErrorException = require('./error');
 const auth = require('./auth');
+const validation = require('./validation');
 
 module.exports = {
   queryOne,
@@ -10,4 +12,5 @@ module.exports = {
   handleResponse,
   ErrorException,
   auth,
+  validation,
 };

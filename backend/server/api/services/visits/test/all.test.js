@@ -1,9 +1,8 @@
 const SQL = require('sql-template-strings');
-const { all, create } = require('../jobs');
-const { create: createUsers } = require('../../users/jobs');
-const { queryOne, query } = require('../../helpers');
+const { all } = require('../jobs');
+const { queryOne } = require('../../helpers');
 const { expect } = require('chai');
-const { create: helpCreate } = require('../../helpers/test');
+const { create: helpCreate, delete: Delete } = require('../../helpers/test');
 
 describe('Visits All', () => {
   let data = {
@@ -19,12 +18,22 @@ describe('Visits All', () => {
     data.visits.one = await helpCreate.visit(
       data.users.one._id,
       data.restaurants.one._id,
-      Math.random() * 49.99
+      (Math.random() * 49.99).toFixed(2)
+    );
+    data.visits.two = await helpCreate.visit(
+      data.users.one._id,
+      data.restaurants.two._id,
+      (Math.random() * 49.99).toFixed(2)
+    );
+    data.visits.three = await helpCreate.visit(
+      data.users.two._id,
+      data.restaurants.one._id,
+      (Math.random() * 49.99).toFixed(2)
     );
   });
 
   afterEach(async () => {
-    // await query(SQL`DELETE FROM "Users"`);
+    await Delete.all();
   });
 
   it('error no ID', async () => {
@@ -40,6 +49,23 @@ describe('Visits All', () => {
 
   it('All visits for one', async () => {
     const result = await all({ id: data.users.one._id });
-    console.log(result);
+    expect(result).to.be.a('object');
+    expect(result.total).to.equal(2);
+    expect(result.data).to.deep.include.members([
+      convertVisit(data.visits.one, data.restaurants.one, data.users.one),
+      convertVisit(data.visits.two, data.restaurants.two, data.users.one),
+    ]);
   });
+});
+
+const convertVisit = (visit, restaurant, user) => ({
+  spent: visit.spent,
+  visited_at: visit.visited_at,
+  User_name: user.name,
+  Restaurant_name: restaurant.name,
+  Restaurant_image_url: restaurant.image_url,
+  Restaurant_price: restaurant.price,
+  Restaurant_rating: restaurant.rating,
+  Restaurant_review_count: restaurant.review_count,
+  Restaurant_url: restaurant.url,
 });

@@ -1,6 +1,7 @@
 const SQL = require('sql-template-strings');
 const { all } = require('../jobs');
 const { queryOne, query } = require('../../helpers');
+const { delete: Delete } = require('../../helpers/test');
 const { expect } = require('chai');
 
 describe('Users All', () => {
@@ -15,7 +16,7 @@ describe('Users All', () => {
   });
 
   afterEach(async () => {
-    await query(SQL`DELETE FROM "Users"`);
+    await Delete.users();
   });
 
   it('shows All', async () => {

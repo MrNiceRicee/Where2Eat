@@ -25,15 +25,8 @@ const handleResponse = (res, statusCode = 200) => {
   };
 };
 
-class ErrorException {
-  constructor(message, statusCode) {
-    this.message = message;
-    this.statusCode = statusCode;
-  }
-}
 
 module.exports = {
   handleError,
   handleResponse,
-  ErrorException,
 };

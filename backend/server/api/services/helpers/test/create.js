@@ -1,6 +1,7 @@
 const SQL = require('sql-template-strings');
-const { queryOne } = require('../');
 const faker = require('faker');
+const { DateTime } = require('luxon');
+const { queryOne } = require('../');
 
 const restaurant = async () => {
   const cost = ['$', '$$', '$$$'];
@@ -58,10 +59,17 @@ const user = async (name) => {
   return result;
 };
 
-const visit = async(user_id, restaurant_id, spent) => {
+const visit = async(user_id, restaurant_id, spent, time) => {
+  // time = time || DateTime.now().toISODate().toLocaleLowerCase('en-US');
+  time = time || DateTime.now().toISODate();
   const query = SQL`
-    INSERT INTO "Visits"("user_id", "restaurant_id", "spent")
-    VALUES(${user_id}, ${restaurant_id}, ${spent || faker.datatype.number(49.99)})
+    INSERT INTO "Visits"("user_id", "restaurant_id", "spent", "visited_at")
+    VALUES(
+      ${user_id},
+      ${restaurant_id},
+      ${spent || faker.datatype.number(49.99)},
+      ${time}
+    )
     RETURNING *`;
   return await queryOne(query);
 }
