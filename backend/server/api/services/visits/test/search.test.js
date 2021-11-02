@@ -1,9 +1,11 @@
 const SQL = require('sql-template-strings');
-const { search } = require('../jobs');
-const { queryOne } = require('../../helpers');
-const { expect } = require('chai');
-const { create: helpCreate, delete: Delete } = require('../../helpers/test');
 const { DateTime } = require('luxon');
+const { expect } = require('chai');
+const { search } = require('../jobs');
+const { queryOne, validation } = require('../../helpers');
+const { testing } = validation;
+const { create: helpCreate, delete: Delete } = require('../../helpers/test');
+const { format } = require('../util');
 
 describe('Visits Search', () => {
   let data = {
@@ -12,7 +14,7 @@ describe('Visits Search', () => {
     restaurants: {},
   };
   beforeEach(async () => {
-    data.users.one = await helpCreate.user({budget_time: 'daily'});
+    data.users.one = await helpCreate.user({ budget_time: 'daily' });
     data.users.two = await helpCreate.user();
     data.restaurants.one = await helpCreate.restaurant();
     data.restaurants.two = await helpCreate.restaurant();
@@ -110,13 +112,36 @@ describe('Visits Search', () => {
     }
   });
 
+  it('Invalid time', async () => {
+    try {
+      const res = await search({
+        user_id: data.users.one._id,
+        restaurant_id: data.restaurants.one._id,
+        time: 'oopsies',
+      });
+      expect(true).to.be.false;
+    } catch (err) {
+      expect(err).to.be.a('object');
+      expect(err).to.deep.equal({
+        message: 'Invalid Time',
+        statusCode: 400,
+      });
+    }
+  });
+
   it('success! user default (daily)', async () => {
     const res = await search({
       user_id: data.users.one._id,
       restaurant_id: data.restaurants.one._id,
       // time: 'monthly',
     });
+    validateRestaurant(res.data, data.restaurants.one);
+
     expect(res.data.Visits.length).to.equal(2);
+    expect(res.data.Visits).to.deep.include.members([
+      format.visit.time(data.visits.four),
+      format.visit.time(data.visits.five),
+    ]);
   });
 
   it('success! weekly', async () => {
@@ -125,7 +150,40 @@ describe('Visits Search', () => {
       restaurant_id: data.restaurants.one._id,
       time: 'weekly',
     });
-    console.log('data', res.data);
+    validateRestaurant(res.data, data.restaurants.one);
     expect(res.data.Visits.length).to.equal(3);
+    expect(res.data.Visits).to.deep.include.members([
+      format.visit.time(data.visits.four),
+      format.visit.time(data.visits.five),
+      format.visit.time(data.visits.six),
+    ]);
+  });
+
+  it('success! monthly', async () => {
+    const res = await search({
+      user_id: data.users.one._id,
+      restaurant_id: data.restaurants.one._id,
+      time: 'monthly',
+    });
+    validateRestaurant(res.data, data.restaurants.one);
+    expect(res.data.Visits.length).to.equal(4);
+    expect(res.data.Visits).to.deep.include.members([
+      format.visit.time(data.visits.four),
+      format.visit.time(data.visits.five),
+      format.visit.time(data.visits.six),
+      format.visit.time(data.visits.one),
+    ]);
   });
 });
+
+const validateRestaurant = (validate, compare) => {
+  expect(validate._id).to.equal(compare._id);
+  expect(validate.name).to.equal(compare.name);
+  expect(validate.image_url).to.equal(compare.image_url);
+  expect(validate.location).to.deep.equal(compare.location);
+  expect(validate.category).to.deep.include.members(compare.category);
+  expect(validate.price).to.equal(compare.price);
+  expect(validate.rating).to.equal(compare.rating);
+  expect(validate.review_count).to.equal(compare.review_count);
+  expect(validate.url).to.equal(compare.url);
+};

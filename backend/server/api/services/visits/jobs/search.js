@@ -6,9 +6,10 @@ const {
   validation,
   ErrorException,
 } = require('../../helpers');
+const { format } = require('../util');
 const { missingValidation, isDefined } = validation;
 
-const search = async ({ user_id, restaurant_id, time }) => {
+const search = async ({ user_id, restaurant_id, time, startTime, endTime }) => {
   missingValidation(user_id, 'User ID', 400);
   missingValidation(restaurant_id, 'Restaurant ID', 400);
 
@@ -22,6 +23,7 @@ const search = async ({ user_id, restaurant_id, time }) => {
 
   let query = SQL`
     SELECT
+      "_id",
       "name",
       "image_url",
       "location",
@@ -36,17 +38,20 @@ const search = async ({ user_id, restaurant_id, time }) => {
       "_id"=${restaurant_id}
   `;
 
-  const restaurants = await queryRows(query);
-  if (!restaurants.length) {
+  const restaurants = await queryOne(query);
+  if (!restaurants) {
     throw new ErrorException('Restaurant not found', 204);
   }
 
   // if there is a defined time, go with it unless
   // go with user's
-  time = time || userTime;
+  time = time || userTime.budget_time;
+  if (time === 'custom') {
+  }
 
   const queryVisits = SQL`
     SELECT
+      "_id",
       "spent",
       "visited_at"
     FROM
@@ -55,21 +60,10 @@ const search = async ({ user_id, restaurant_id, time }) => {
       "restaurant_id"=${restaurant_id} AND
       "user_id"=${user_id}
   `;
-  queryVisits.append(getTime(time));
+  queryVisits.append(getTime({ time }));
   queryVisits.append(SQL`ORDER BY "visited_at" DESC`);
   let visits = await queryRows(queryVisits);
-  visits = visits.map((item) => {
-    const translatedDate = DateTime.fromJSDate(item.visited_at);
-    const newTime = translatedDate.toFormat(
-      'yyyy MMMM dd'
-    );
-    item.human_time = translatedDate.toRelative();
-    if (translatedDate.hasSame(DateTime.now(), 'day')) {
-      item.human_time = 'today';
-    }
-    item.visited_at = newTime;
-    return item;
-  });
+  visits = visits.map((item) => format.visit.time(item));
   restaurants.Visits = visits;
 
   return {
@@ -77,7 +71,7 @@ const search = async ({ user_id, restaurant_id, time }) => {
   };
 };
 
-const getTime = ({ budget_time: time }) => {
+const getTime = ({ time, startTime, endTime }) => {
   switch (time) {
     case 'daily':
       return SQL` AND "visited_at" >= ${DateTime.now()
@@ -97,12 +91,11 @@ const getTime = ({ budget_time: time }) => {
         .toISODate()} AND
         "visited_at" <= ${DateTime.now().toISODate()}  
       `;
+    case 'custom':
+      return SQL` AND "visited_at" >= ${startTime} AND 
+      "visited_at" <= ${endTime}`;
     default:
-      return SQL` AND "visited_at" >= ${DateTime.now()
-        .minus({ weeks: 1 })
-        .toISODate()} AND
-        "visited_at" <= ${DateTime.now().toISODate()}  
-      `;
+      throw new ErrorException('Invalid Time', 400);
   }
 };
 
