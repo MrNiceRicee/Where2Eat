@@ -68,16 +68,51 @@ describe('Visits Create', () => {
 
   it('error spent not enough', async () => {
     try {
-      const res = await create({
+      await create({
         user_id: data.users.one._id,
         restaurant_id: data.restaurants.one._id,
         spent: 0,
       });
+      expect(true).to.be.false;
     } catch (err) {
       expect(err).to.be.a('object');
       expect(err).to.deep.equal({
         message: 'Spent amount must be > 0',
         statusCode: 400,
+      });
+    }
+  });
+
+  it('error User not found', async () => {
+    try {
+      await create({
+        user_id: 1,
+        restaurant_id: data.restaurants.one._id,
+        spent: .1,
+      });
+      expect(true).to.be.false;
+    } catch (err) {
+      expect(err).to.be.a('object');
+      expect(err).to.deep.equal({
+        message: 'User not found',
+        statusCode: 204,
+      });
+    }
+  });
+
+  it('error Restaurant not found', async () => {
+    try {
+      await create({
+        user_id: data.users.one._id,
+        restaurant_id: 1,
+        spent: .1,
+      });
+      expect(true).to.be.false;
+    } catch (err) {
+      expect(err).to.be.a('object');
+      expect(err).to.deep.equal({
+        message: 'Restaurant not found',
+        statusCode: 204,
       });
     }
   });

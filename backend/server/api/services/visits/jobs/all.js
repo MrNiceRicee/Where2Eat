@@ -1,8 +1,22 @@
 const SQL = require('sql-template-strings');
-const { queryRows, ErrorException } = require('../../helpers');
+const {
+  queryRows,
+  ErrorException,
+  queryOne,
+  validation,
+} = require('../../helpers');
+const { missingValidation } = validation;
 
 const all = async ({ id }) => {
-  if (!id) throw new ErrorException('Missing User ID', 400);
+  missingValidation(id, 'User ID', 400);
+
+  // check user
+  const user = await queryOne(
+    SQL` SELECT "_id" FROM "Users" WHERE "_id"=${id} `
+  );
+
+  missingValidation(user, '', 400, 'User not found');
+
   let query = SQL`
   SELECT
     "Visit"."spent",

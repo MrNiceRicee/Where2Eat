@@ -1,5 +1,6 @@
 const Big = require('big.js');
 const ErrorException = require('./error');
+const { DateTime } = require('luxon');
 
 const getOperator = (operator) => {
   switch (operator) {
@@ -84,8 +85,22 @@ const missingValidation = (item, itemName, statusCode = 400, message) => {
   }
 };
 
+const isValidDate = (date, name) => {
+  try {
+    if (!DateTime.fromISO(date).isValid) {
+      throw new Error('throw below');
+    }
+    return true;
+
+  } catch (err) {
+    // console.log(err);
+    throw new ErrorException(`Invalid ${name} Date`, 400);
+  }
+}
+
 module.exports = {
   isDefined,
+  isValidDate,
   missingValidation,
   numberValidation,
 };

@@ -19,9 +19,10 @@ const update = async (id, { update } = {}) => {
   const updateKeys = Object.keys(update);
   const acceptedKeys = [];
   updateKeys.forEach((item) => {
-    if (editable[item]) {
-      acceptedKeys.push(` "${item}"='${update[item]}' `);
+    if (!editable[item]) {
+      throw new ErrorException('Invalid Update', 400);
     }
+    acceptedKeys.push(` "${item}"='${update[item]}' `);
   });
 
   query.append(acceptedKeys.join(' , '));

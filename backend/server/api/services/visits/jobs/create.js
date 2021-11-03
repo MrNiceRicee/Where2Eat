@@ -14,6 +14,17 @@ const create = async ({ user_id, restaurant_id, spent }) => {
     compareNumber: 0,
   });
 
+  // verify user and restaurant
+
+  const user = await queryOne(
+    SQL` SELECT "_id" FROM "Users" WHERE "_id"=${user_id}`
+  );
+  missingValidation(user, '', 204, 'User not found');
+  const restaurant = await queryOne(
+    SQL` SELECT "_id" FROM "Restaurants" WHERE "_id"=${restaurant_id}`
+  );
+  missingValidation(restaurant, '', 204, 'Restaurant not found');
+
   const query = SQL`
     INSERT INTO "Visits" ("user_id", "restaurant_id", "spent")
       VALUES(${user_id}, ${restaurant_id}, ${spent})

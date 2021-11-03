@@ -7,7 +7,7 @@ const {
   ErrorException,
 } = require('../../helpers');
 const { format } = require('../util');
-const { missingValidation, isDefined } = validation;
+const { missingValidation, isValidDate } = validation;
 
 const search = async ({ user_id, restaurant_id, time, startTime, endTime }) => {
   missingValidation(user_id, 'User ID', 400);
@@ -16,9 +16,8 @@ const search = async ({ user_id, restaurant_id, time, startTime, endTime }) => {
   const userTime = await queryOne(
     SQL`SELECT "budget_time" FROM "Users" WHERE "_id"=${user_id}`
   );
-
   missingValidation(userTime, '', 204, 'User not found');
-  
+
   let query = SQL`
     SELECT
       "_id",
@@ -44,7 +43,12 @@ const search = async ({ user_id, restaurant_id, time, startTime, endTime }) => {
   // if there is a defined time, go with it unless
   // go with user's
   time = time || userTime.budget_time;
+
   if (time === 'custom') {
+    missingValidation(startTime, 'Start Date', 400);
+    missingValidation(endTime, 'End Date', 400);
+    isValidDate(startTime, 'Start')
+    isValidDate(endTime, 'End')
   }
 
   const queryVisits = SQL`
@@ -58,7 +62,7 @@ const search = async ({ user_id, restaurant_id, time, startTime, endTime }) => {
       "restaurant_id"=${restaurant_id} AND
       "user_id"=${user_id}
   `;
-  queryVisits.append(getTime({ time }));
+  queryVisits.append(getTime({ time, startTime, endTime }));
   queryVisits.append(SQL`ORDER BY "visited_at" DESC`);
   let visits = await queryRows(queryVisits);
   visits = visits.map((item) => format.visit.time(item));

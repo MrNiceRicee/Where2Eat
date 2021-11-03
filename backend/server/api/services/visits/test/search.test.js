@@ -129,6 +129,79 @@ describe('Visits Search', () => {
     }
   });
 
+  it('error! custom date missing start', async () => {
+    try {
+      await search({
+        user_id: data.users.one._id,
+        restaurant_id: data.restaurants.one._id,
+        time: 'custom',
+      });
+      expect(true).to.be.false;
+    } catch (err) {
+      expect(err).to.be.a('object');
+      expect(err).to.deep.equal({
+        message: 'Missing Start Date',
+        statusCode: 400,
+      });
+    }
+  });
+
+  it('error! custom date missing end', async () => {
+    try {
+      await search({
+        user_id: data.users.one._id,
+        restaurant_id: data.restaurants.one._id,
+        time: 'custom',
+        startTime: '1',
+      });
+      expect(true).to.be.false;
+    } catch (err) {
+      expect(err).to.be.a('object');
+      expect(err).to.deep.equal({
+        message: 'Missing End Date',
+        statusCode: 400,
+      });
+    }
+  });
+
+  it('error! custom, invalid start', async () => {
+    try {
+      await search({
+        user_id: data.users.one._id,
+        restaurant_id: data.restaurants.one._id,
+        time: 'custom',
+        startTime: '1',
+        endTime: '1',
+      });
+      expect(true).to.be.false;
+    } catch (err) {
+      expect(err).to.be.a('object');
+      expect(err).to.deep.equal({
+        message: 'Invalid Start Date',
+        statusCode: 400,
+      });
+    }
+  });
+
+  it('error! custom, invalid end', async () => {
+    try {
+      await search({
+        user_id: data.users.one._id,
+        restaurant_id: data.restaurants.one._id,
+        time: 'custom',
+        startTime: '2015-10-01',
+        endTime: '1',
+      });
+      expect(true).to.be.false;
+    } catch (err) {
+      expect(err).to.be.a('object');
+      expect(err).to.deep.equal({
+        message: 'Invalid End Date',
+        statusCode: 400,
+      });
+    }
+  });
+
   it('success! user default (daily)', async () => {
     const res = await search({
       user_id: data.users.one._id,
@@ -175,18 +248,17 @@ describe('Visits Search', () => {
     ]);
   });
 
-  it('success! monthly', async () => {
+  it('success! custom', async () => {
     const res = await search({
       user_id: data.users.one._id,
       restaurant_id: data.restaurants.one._id,
       time: 'custom',
+      startTime: DateTime.now().minus({ months: 2 }).toISODate(),
+      endTime: DateTime.now().minus({ days: 24 }).toISODate(),
     });
     validateRestaurant(res.data, data.restaurants.one);
-    expect(res.data.Visits.length).to.equal(4);
+    expect(res.data.Visits.length).to.equal(1);
     expect(res.data.Visits).to.deep.include.members([
-      format.visit.time(data.visits.four),
-      format.visit.time(data.visits.five),
-      format.visit.time(data.visits.six),
       format.visit.time(data.visits.one),
     ]);
   });

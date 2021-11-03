@@ -47,6 +47,17 @@ describe('Visits All', () => {
     }
   });
 
+  it('error User not found', async () => {
+    try {
+      await all({});
+    } catch (err) {
+      expect(err).to.deep.equal({
+        message: 'User not found',
+        statusCode: 400,
+      });
+    }
+  });
+
   it('All visits for one', async () => {
     const result = await all({ id: data.users.one._id });
     expect(result).to.be.a('object');
