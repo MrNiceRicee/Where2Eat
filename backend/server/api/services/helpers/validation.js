@@ -78,9 +78,9 @@ const isDefined = (validate) => {
  * @param {String} itemName 
  * @param {Number} statusCode - 400.
  */
-const missingValidation = (item, itemName, statusCode = 400) => {
+const missingValidation = (item, itemName, statusCode = 400, message) => {
   if (!isDefined(item) || !item) {
-    throw new ErrorException(`Missing ${itemName}`, statusCode);
+    throw new ErrorException(message || `Missing ${itemName}`, statusCode);
   }
 };
 

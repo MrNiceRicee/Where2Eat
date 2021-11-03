@@ -17,10 +17,8 @@ const search = async ({ user_id, restaurant_id, time, startTime, endTime }) => {
     SQL`SELECT "budget_time" FROM "Users" WHERE "_id"=${user_id}`
   );
 
-  if (!isDefined(userTime)) {
-    throw new ErrorException('User not found', 204);
-  }
-
+  missingValidation(userTime, '', 204, 'User not found');
+  
   let query = SQL`
     SELECT
       "_id",

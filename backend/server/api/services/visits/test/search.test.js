@@ -174,6 +174,22 @@ describe('Visits Search', () => {
       format.visit.time(data.visits.one),
     ]);
   });
+
+  it('success! monthly', async () => {
+    const res = await search({
+      user_id: data.users.one._id,
+      restaurant_id: data.restaurants.one._id,
+      time: 'custom',
+    });
+    validateRestaurant(res.data, data.restaurants.one);
+    expect(res.data.Visits.length).to.equal(4);
+    expect(res.data.Visits).to.deep.include.members([
+      format.visit.time(data.visits.four),
+      format.visit.time(data.visits.five),
+      format.visit.time(data.visits.six),
+      format.visit.time(data.visits.one),
+    ]);
+  });
 });
 
 const validateRestaurant = (validate, compare) => {
