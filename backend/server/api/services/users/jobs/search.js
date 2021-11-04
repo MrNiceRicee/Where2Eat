@@ -10,6 +10,7 @@ const search = async ({ id, name, strict = false } = {}) => {
   if (id) {
     filter.append(` AND "_id"=${id} `);
   }
+  
   if (name) {
     if (strict) {
       filter.append(` AND "name" ILIKE '${name}'`);
