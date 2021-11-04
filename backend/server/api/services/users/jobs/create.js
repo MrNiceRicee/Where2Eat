@@ -9,7 +9,7 @@ const create = async ({ name } = {}) => {
     RETURNING "name", "total_visits", "total_visited_restaurants", "spent", "budget", "budget_time";
     `;
   const res = await queryOne(query);
-  return res;
+  return { data: res};
 };
 
 module.exports = create;

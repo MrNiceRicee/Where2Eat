@@ -1,34 +1,31 @@
 const SQL = require('sql-template-strings');
 const { search } = require('../jobs');
 const { queryOne, query } = require('../../helpers');
+const { create, delete: deleteItems } = require('../../helpers/test');
+
 const { expect } = require('chai');
 
 describe('Users Search', () => {
   let users = {};
   beforeEach(async () => {
-    users.one = await queryOne(
-      SQL`INSERT INTO "Users" ("name") VALUES('test_user1') RETURNING *`
-    );
-    users.two = await queryOne(
-      SQL`INSERT INTO "Users" ("name") VALUES('test_user2') RETURNING *`
-    );
+    users.one = await create.user({ name: 'test_user1' });
+    users.two = await create.user({ name: 'test_user2' });
   });
 
   afterEach(async () => {
-    await query(SQL`DELETE FROM "Users"`);
+    await deleteItems.users();
   });
 
-  it('Error no search', () => {
-    search()
-      .then(() => {
-        expect(true).to.be.false; // just in case it doesn't fail
-      })
-      .catch((err) => {
-        expect(err).to.deep.equal({
-          message: 'Missing search requirements',
-          statusCode: 400,
-        });
+  it('Error no search', async () => {
+    try {
+      await search();
+      expect(true).to.be.false; // just in case it doesn't fail
+    } catch (err) {
+      expect(err).to.deep.equal({
+        message: 'Missing search requirements',
+        statusCode: 400,
       });
+    }
   });
 
   it('Search one', async () => {
@@ -51,6 +48,14 @@ describe('Users Search', () => {
     expect(result).to.deep.equal({
       total: 1,
       data: [users.two],
+    });
+  });
+
+  it('Search none strict', async () => {
+    const result = await search({ name: 'test_user', strict: true });
+    expect(result).to.deep.equal({
+      total: 0,
+      data: [],
     });
   });
 });

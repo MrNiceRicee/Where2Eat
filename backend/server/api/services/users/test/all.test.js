@@ -1,18 +1,14 @@
 const SQL = require('sql-template-strings');
 const { all } = require('../jobs');
 const { queryOne, query } = require('../../helpers');
-const { delete: Delete } = require('../../helpers/test');
+const { delete: Delete, create } = require('../../helpers/test');
 const { expect } = require('chai');
 
 describe('Users All', () => {
   let users = {};
   beforeEach(async () => {
-    users.one = await queryOne(
-      SQL`INSERT INTO "Users" ("name") VALUES('test_user1') RETURNING *`
-    );
-    users.two = await queryOne(
-      SQL`INSERT INTO "Users" ("name") VALUES('test_user2') RETURNING *`
-    );
+    users.one = await create.user();
+    users.two = await create.user();
   });
 
   afterEach(async () => {

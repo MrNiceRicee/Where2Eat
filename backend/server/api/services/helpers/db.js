@@ -35,8 +35,11 @@ const query = async (text, params) => {
   return await pool.query(text, params);
 };
 
+const getClient = async () => await pool.connect();
+
 module.exports = {
   query,
   queryOne,
   queryRows,
+  getClient,
 };

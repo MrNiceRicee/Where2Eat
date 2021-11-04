@@ -9,7 +9,7 @@ const update = async (id, { update } = {}) => {
   const checkDB = await queryOne(
     SQL`SELECT "_id", "name" FROM "Users" WHERE "_id"=${id}`
   );
-  if (!checkDB) throw new ErrorException('No User found', 500);
+  if (!checkDB) throw new ErrorException('No User found', 204);
 
   const query = SQL`
       UPDATE "Users"

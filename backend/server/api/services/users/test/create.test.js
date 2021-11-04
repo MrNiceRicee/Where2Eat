@@ -10,19 +10,6 @@ describe('Users Create', () => {
     await query(SQL`DELETE FROM "Users"`);
   });
 
-  it('Create One', async () => {
-    const result = await create({ name: 'test_one' });
-    expect(result).to.be.a('object');
-    expect(result.name).to.equal('test_one');
-  });
-
-  it('Check in DB', async () => {
-    await create({ name: 'test_one' });
-    const result = await queryOne(SQL`SELECT * FROM "Users"`);
-    expect(result).to.be.a('object');
-    expect(result.name).to.equal('test_one');
-  });
-
   it('Error no Name', async () => {
     try {
       await create();
@@ -33,5 +20,26 @@ describe('Users Create', () => {
         statusCode: 400,
       });
     }
+  });
+
+  it('Create One', async () => {
+    const result = await create({ name: 'test_one' });
+    expect(result).to.be.a('object');
+    expect(result.data.name).to.equal('test_one');
+    expect(result.data).to.deep.equal({
+      name: 'test_one',
+      total_visited_restaurants: 0,
+      total_visits: 0,
+      spent: '0',
+      budget: '0',
+      budget_time: 'weekly',
+    });
+  });
+
+  it('Check in DB', async () => {
+    await create({ name: 'test_one' });
+    const result = await queryOne(SQL`SELECT * FROM "Users"`);
+    expect(result).to.be.a('object');
+    expect(result.name).to.equal('test_one');
   });
 });

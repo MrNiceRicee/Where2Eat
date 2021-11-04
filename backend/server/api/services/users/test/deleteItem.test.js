@@ -38,7 +38,7 @@ describe('Users Delete Item', () => {
       })
       .catch((err) => {
         expect(err).to.deep.equal({
-          message: 'No User found',
+          data: 'No User found',
           statusCode: 400,
         });
       });
@@ -47,7 +47,7 @@ describe('Users Delete Item', () => {
   it('Delete One', async () => {
     const result = await deleteItem(users.one._id);
     expect(result).to.deep.equal({
-      message: 'Deleted User',
+      data: 'Deleted User',
     });
   });
 

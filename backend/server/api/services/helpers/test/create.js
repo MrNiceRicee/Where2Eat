@@ -3,7 +3,7 @@ const faker = require('faker');
 const { DateTime } = require('luxon');
 const { queryOne } = require('../');
 
-const restaurant = async () => {
+const restaurant = async ({ name }) => {
   const cost = ['$', '$$', '$$$'];
   const query = SQL`INSERT INTO "Restaurants"(
       "_id",
@@ -18,7 +18,7 @@ const restaurant = async () => {
 
       VALUES(
         ${faker.datatype.uuid()},
-        ${faker.company.companyName()},
+        ${name || faker.company.companyName()},
         ${faker.image.food()},
         ${{
           address1: faker.address.streetAddress(),

@@ -1,12 +1,18 @@
 const SQL = require('sql-template-strings');
-const { query, queryOne, ErrorException } = require('../../helpers');
+const {
+  query,
+  queryOne,
+  validation,
+} = require('../../helpers');
+const { missingValidation } = validation;
 
 const create = async (id) => {
-  if (!id) throw new ErrorException('Missing ID', 400);
+  missingValidation(id, 'ID', 400);
+
   const checkDB = await queryOne(
     SQL`SELECT "_id", "name" FROM "Users" WHERE "_id"=${id}`
   );
-  if (!checkDB) throw new ErrorException('No User found', 400);
+  missingValidation(checkDB, 'User', 400, 'No User found');
 
   const statement = SQL`
     DELETE FROM "Users"
@@ -14,8 +20,7 @@ const create = async (id) => {
     `;
   await query(statement);
   return {
-    message: 'Deleted User',
+    data: 'Deleted User',
   };
 };
-
 module.exports = create;
