@@ -49,7 +49,7 @@ describe('Visits All', () => {
 
   it('error User not found', async () => {
     try {
-      await all({});
+      await all({ id: -1});
     } catch (err) {
       expect(err).to.deep.equal({
         message: 'User not found',

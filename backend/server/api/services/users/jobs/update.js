@@ -3,7 +3,7 @@ const { queryOne, ErrorException } = require('../../helpers');
 const editable = { name: true, budget: true, budget_time: true };
 
 const update = async (id, { update } = {}) => {
-  if (!id) throw new ErrorException('Missing ID', 500);
+  if (!id) throw new ErrorException('Missing ID', 400);
   if (!update) throw new ErrorException('Missing update package', 400);
 
   const checkDB = await queryOne(

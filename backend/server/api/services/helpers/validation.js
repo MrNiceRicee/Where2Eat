@@ -33,32 +33,32 @@ const getOperator = (operator) => {
  */
 const numberValidation = ({
   operator,
-  itemName,
-  validateNumber,
-  compareNumber,
+  name,
+  validate,
+  compare,
   failedMessage,
-  invalidMessage,
+  invalidMessage
 }) => {
   const [op, sign] = getOperator(operator);
   try {
-    if (!Big(validateNumber)[op](compareNumber)) {
+    if (!Big(validate)[op](compare)) {
       throw new Error('catch below');
     }
     return true;
   } catch (error) {
-    if (isDefined(validateNumber)) {
+    if (isDefined(validate)) {
       throw new ErrorException(
-        failedMessage || `${itemName} must be ${sign} ${compareNumber}`,
+        failedMessage || `${name} must be ${sign} ${compare}`,
         400
       );
     }
-    throw new ErrorException(invalidMessage || `Missing ${itemName}`, 400);
+    throw new ErrorException(invalidMessage || `Missing ${name}`, 400);
   }
 };
 
 /**
  * Checks to see if validate is not null or undefined
- * @param {any} validate 
+ * @param {any} validate
  * @returns Boolean
  */
 const isDefined = (validate) => {
@@ -75,8 +75,8 @@ const isDefined = (validate) => {
 
 /**
  * Check if the item exist and truthy
- * @param {any} item 
- * @param {String} itemName 
+ * @param {any} item
+ * @param {String} itemName
  * @param {Number} statusCode - 400.
  */
 const missingValidation = (item, itemName, statusCode = 400, message) => {
@@ -91,16 +91,32 @@ const isValidDate = (date, name) => {
       throw new Error('throw below');
     }
     return true;
-
   } catch (err) {
     // console.log(err);
     throw new ErrorException(`Invalid ${name} Date`, 400);
   }
-}
+};
+
+const isIncluded = ({ validate, name, valid, strict = true }) => {
+  if (!isDefined(validate)) {
+    throw new ErrorException(`Missing ${name}`, 400);
+  }
+  if (strict && !validate) {
+    throw new ErrorException(`Missing ${name}`, 400);
+  }
+  if (!valid.includes(validate)) {
+    throw new ErrorException(
+      name ? `Invalid entry - ${name}` : `Invalid entry`,
+      400
+    );
+  }
+  return true;
+};
 
 module.exports = {
   isDefined,
   isValidDate,
+  isIncluded,
   missingValidation,
   numberValidation,
 };

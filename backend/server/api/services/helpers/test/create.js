@@ -3,7 +3,7 @@ const faker = require('faker');
 const { DateTime } = require('luxon');
 const { queryOne } = require('../');
 
-const restaurant = async ({ name }) => {
+const restaurant = async ({ name } = {}) => {
   const cost = ['$', '$$', '$$$'];
   const query = SQL`INSERT INTO "Restaurants"(
       "_id",
@@ -42,7 +42,7 @@ const restaurant = async ({ name }) => {
   return result;
 };
 
-const user = async ({name, budget, budget_time} = {}) => {
+const user = async ({ name, budget, budget_time } = {}) => {
   const time = ['daily', 'weekly', 'monthly'];
   const query = SQL`INSERT INTO "Users"("name", "budget", "budget_time")
   VALUES(
@@ -62,15 +62,19 @@ const user = async ({name, budget, budget_time} = {}) => {
   return result;
 };
 
-const visit = async (user_id, restaurant_id, spent, time) => {
+const visit = async (
+  user_id,
+  restaurant_id,
+  spent = faker.datatype.number(49.99),
+  time = DateTime.now().toISODate()
+) => {
   // time = time || DateTime.now().toISODate().toLocaleLowerCase('en-US');
-  time = time || DateTime.now().toISODate();
   const query = SQL`
     INSERT INTO "Visits"("user_id", "restaurant_id", "spent", "visited_at")
     VALUES(
       ${user_id},
       ${restaurant_id},
-      ${spent || faker.datatype.number(49.99)},
+      ${spent},
       ${time}
     )
     RETURNING *`;

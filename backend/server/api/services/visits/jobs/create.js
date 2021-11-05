@@ -9,9 +9,9 @@ const create = async ({ user_id, restaurant_id, spent }) => {
 
   numberValidation({
     operator: 'gt',
-    itemName: 'Spent amount',
-    validateNumber: spent,
-    compareNumber: 0,
+    name: 'Spent amount',
+    validate: spent,
+    compare: 0,
   });
 
   // verify user and restaurant
