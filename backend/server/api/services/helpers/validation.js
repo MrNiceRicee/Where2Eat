@@ -85,6 +85,12 @@ const missingValidation = (item, itemName, statusCode = 400, message) => {
   }
 };
 
+/**
+ * Verify that the date exist, and also if it is a valid date
+ * @param {String} date - date to validate
+ * @param {String} name - name of date
+ * @returns Boolean
+ */
 const isValidDate = (date, name) => {
   try {
     if (!DateTime.fromISO(date).isValid) {
@@ -97,6 +103,15 @@ const isValidDate = (date, name) => {
   }
 };
 
+/**
+ * Verify object exist, and is part of an array (verified selections)
+ * @param {Object} param
+ * @validate - String - Number. compare if it is valid
+ * @name - String. Name of the object
+ * @valid - Array. Valid selections
+ * @strict - Boolean. Checks if it is a truthy value. Defualt: true
+ * @returns Boolean
+ */
 const isIncluded = ({ validate, name, valid, strict = true }) => {
   if (!isDefined(validate)) {
     throw new ErrorException(`Missing ${name}`, 400);
