@@ -17,14 +17,12 @@ const update = async (id, { update } = {}) => {
   let filter = SQL` WHERE "_id"=${id} `;
 
   const updateKeys = Object.keys(update);
-  const acceptedKeys = [];
-  updateKeys.forEach((item) => {
+  const acceptedKeys = updateKeys.map((item) => {
     if (!editable[item]) {
       throw new ErrorException('Invalid Update', 400);
     }
-    acceptedKeys.push(` "${item}"='${update[item]}' `);
+    return (` "${item}"='${update[item]}' `);
   });
-
   query.append(acceptedKeys.join(' , '));
   query.append(filter);
   await queryOne(query);

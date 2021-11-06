@@ -2,9 +2,11 @@ const SQL = require('sql-template-strings');
 const faker = require('faker');
 const { DateTime } = require('luxon');
 const { queryOne } = require('../');
+const Big = require('big.js');
 
 const restaurant = async ({ name, rating, review_count } = {}) => {
   const cost = ['$', '$$', '$$$'];
+  const decimals = [0, 0.25, 0.5, 0.75, 1];
   const query = SQL`INSERT INTO "Restaurants"(
       "_id",
       "name",
@@ -30,9 +32,11 @@ const restaurant = async ({ name, rating, review_count } = {}) => {
           state: 'AZ',
         }},
         ARRAY[${faker.music.genre()}, ${faker.music.genre()}, ${faker.music.genre()} ],
-        ${cost[faker.datatype.number(2)]},
-        ${rating || faker.datatype.number({ min: 0.25, max: 5 })},
-        ${ review_count || faker.datatype.number(10000)},
+        ${cost[faker.datatype.number(cost.length - 1)]},
+        ${rating || Big(faker.datatype.number(4)).plus(
+          decimals[faker.datatype.number(decimals.length - 1)]
+        ).toNumber()},
+        ${review_count || faker.datatype.number(10000)},
         ${faker.image.fashion()}
       )
 
@@ -65,16 +69,21 @@ const user = async ({ name, budget, budget_time } = {}) => {
 const visit = async (
   user_id,
   restaurant_id,
-  spent = faker.datatype.number(49.99),
+  spent = faker.datatype.number(49),
   time = DateTime.now().toISODate()
 ) => {
-  // time = time || DateTime.now().toISODate().toLocaleLowerCase('en-US');
+  const decimals = [0, 0.25, 0.49, 0.5, 0.75, 0.9, 0.99];
   const query = SQL`
     INSERT INTO "Visits"("user_id", "restaurant_id", "spent", "visited_at")
     VALUES(
       ${user_id},
       ${restaurant_id},
-      ${spent},
+      ${
+        spent ||
+        Big(faker.datatype.number(49)).plus(
+          decimals[faker.datatype.number(decimals.length - 1)]
+        ).toNumber()
+      },
       ${time}
     )
     RETURNING *`;

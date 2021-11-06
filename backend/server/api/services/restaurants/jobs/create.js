@@ -23,7 +23,7 @@ const create = async ({
   missingValidation(review_count, 'Review Count', 400);
   missingValidation(url, 'URL', 400);
   const query = SQL`
-    INSERT INTO "Restaurant" (
+    INSERT INTO "Restaurants" (
       "_id",
       "name",
       "image_url",

@@ -2,7 +2,7 @@ const { expect } = require('chai');
 const search = require('../jobs/search');
 const { fakeYelp } = require('./fakeYelpData');
 
-describe('Restaurant Search', () => {
+describe('Restaurants Search', () => {
   const data = {};
   beforeEach(async () => {
   });
@@ -10,18 +10,16 @@ describe('Restaurant Search', () => {
   afterEach(async () => {
   });
 
-  it('Error no search', () => {
-    search
-      .search()
-      .then(() => {
-        expect(true).toEqual(false); // just in case it doesn't fail
+  it('Error no search', async () => {
+    try {
+      await search.search();
+      expect(true).to.be.false;
+    } catch(err) {
+      expect(err).deep.equal({
+        message: 'Missing location requirements',
+        statusCode: 400,
       })
-      .catch((err) => {
-        expect(err).deep.equal({
-          message: 'Missing location requirements',
-          statusCode: 400,
-        });
-      });
+    }
   });
 
   it('Search one', async () => {
