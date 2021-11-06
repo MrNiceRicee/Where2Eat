@@ -1,11 +1,50 @@
 const SQL = require('sql-template-strings');
 const { queryOne, ErrorException } = require('../../helpers');
+const { missingValidation } = require('../../helpers/validation');
 
-const create = async ({ name } = {}) => {
-  if (!name) throw new ErrorException('Missing name', 500);
+const create = async ({
+  _id,
+  name,
+  image_url,
+  location,
+  category,
+  price,
+  rating,
+  review_count,
+  url,
+} = {}) => {
+  missingValidation(_id, 'ID', 400);
+  missingValidation(name, 'Name', 400);
+  missingValidation(image_url, 'Image_url', 400);
+  missingValidation(location, 'Location', 400);
+  missingValidation(category, 'Category', 400);
+  missingValidation(price, 'Price', 400);
+  missingValidation(rating, 'Rating', 400);
+  missingValidation(review_count, 'Review Count', 400);
+  missingValidation(url, 'URL', 400);
   const query = SQL`
-    INSERT INTO "Restaurant" ("name")
-      VALUES(${name})
+    INSERT INTO "Restaurant" (
+      "_id",
+      "name",
+      "image_url",
+      "location",
+      "category",
+      "price",
+      "rating",
+      "review_count",
+      "url"
+    )
+    VALUES(
+      ${_id},
+      ${name},
+      ${image_url},
+      ${location},
+      ${category},
+      ${price},
+      ${rating},
+      ${review_count},
+      ${url}
+    )
     RETURNING *
     `;
   const res = await queryOne(query);
