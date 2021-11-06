@@ -3,6 +3,7 @@ const { handleError, handleResponse } = require('./responses');
 const ErrorException = require('./error');
 const auth = require('./auth');
 const validation = require('./validation');
+const format = require('./format');
 
 module.exports = {
   queryOne,
@@ -14,4 +15,5 @@ module.exports = {
   ErrorException,
   auth,
   validation,
+  format,
 };

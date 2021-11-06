@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const search = require('../job/search');
+const search = require('../jobs/search');
 const { fakeYelp } = require('./fakeYelpData');
 
 describe('Restaurant Search', () => {
