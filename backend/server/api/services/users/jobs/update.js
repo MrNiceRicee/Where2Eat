@@ -1,10 +1,11 @@
 const SQL = require('sql-template-strings');
-const { queryOne, ErrorException } = require('../../helpers');
+const { queryOne, ErrorException, validation } = require('../../helpers');
+const { missingValidation } = validation;
 const editable = { name: true, budget: true, budget_time: true };
 
 const update = async (id, { update } = {}) => {
-  if (!id) throw new ErrorException('Missing ID', 400);
-  if (!update) throw new ErrorException('Missing update package', 400);
+  missingValidation(id, 'ID', 400);
+  missingValidation(update, 'update package', 400);
 
   const checkDB = await queryOne(
     SQL`SELECT "_id", "name" FROM "Users" WHERE "_id"=${id}`
