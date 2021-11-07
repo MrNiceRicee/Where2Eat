@@ -21,29 +21,24 @@ const update = async (id, update) => {
   );
   if (!checkDB) throw new ErrorException('No Restaurant found', 204);
 
-  let query = `
+  let query = SQL`
   UPDATE "Restaurants"
     SET `;
-  const values = [];
-  
+
   const updateKeys = Object.keys(update);
-  const acceptedKeys = updateKeys.map((item) => {
+  updateKeys.forEach((item) => {
     if (!editable[item]) {
       throw new ErrorException('Invalid Update', 400);
     }
-    let word = update[item];
-    word = word.replaceAll("'", `\'`);
-    values.push(word)
-    return ` "${item}"=$${values.length} `;
+    if (!update[item]) {
+      throw new ErrorException('Missing Update Details', 400);
+    }
+    query.append(` ${item}`);
+    query.append(SQL`=${update[item]} `);
   });
-  const validKeys = acceptedKeys.join(' , ');
-  query += validKeys
-  values.push(id);
-  const filter = ` WHERE "_id"=$${values.length} `;
-  query += filter;
-  console.log(query, values);
-
-  await queryOne(query, values);
+  const filter = SQL` WHERE "_id"=${id} `;
+  query.append(filter);
+  await queryOne(query);
   return {
     message: 'Updated Restaurant',
   };

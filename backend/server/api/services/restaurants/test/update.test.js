@@ -54,14 +54,27 @@ describe('Restaurants Update', () => {
     }
   });
 
-  it('error wrong package', async () => {
+  it('error Invalid Update', async () => {
     try {
       await update(data.one._id, { hello: 'world!' });
       expect(true).to.be.false;
     } catch (err) {
-      // expect(err).to.be.an('object');
+      expect(err).to.be.an('object');
       expect(err).to.deep.equals({
         message: 'Invalid Update',
+        statusCode: 400,
+      });
+    }
+  });
+
+  it('error Missing Update', async () => {
+    try {
+      await update(data.one._id, { name: '' });
+      expect(true).to.be.false;
+    } catch (err) {
+      expect(err).to.be.an('object');
+      expect(err).to.deep.equals({
+        message: 'Missing Update Details',
         statusCode: 400,
       });
     }
