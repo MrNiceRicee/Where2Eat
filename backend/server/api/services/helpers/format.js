@@ -1,6 +1,6 @@
 // order = [ '', 'DESC' ];
 const SQL = require('sql-template-strings');
-const { ErrorException } = require('.');
+const { ErrorException } = require('./error');
 const { isDefined } = require('./validation');
 
 const orderFormat = (order) => {

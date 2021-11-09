@@ -1,5 +1,4 @@
 const SQL = require('sql-template-strings');
-const Big = require('big.js');
 const { queryOne, validation } = require('../../helpers');
 const { missingValidation, numberValidation } = validation;
 

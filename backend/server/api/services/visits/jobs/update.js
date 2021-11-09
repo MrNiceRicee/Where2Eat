@@ -38,7 +38,10 @@ const update = async (id, update) => {
   if (isDefined(update.visited_at)) {
     try {
       isValidDate(update.visited_at, 'Visit');
-      if (DateTime.fromISO(update.visited_at).toISODate() > DateTime.now().toISODate()) {
+      if (
+        DateTime.fromISO(update.visited_at).toISODate() >
+        DateTime.now().toISODate()
+      ) {
         throw new ErrorException('Date cannot be set in the future', 400);
       }
     } catch (err) {

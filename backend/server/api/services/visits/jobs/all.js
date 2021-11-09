@@ -1,7 +1,6 @@
 const SQL = require('sql-template-strings');
 const {
   queryRows,
-  ErrorException,
   queryOne,
   validation,
 } = require('../../helpers');
