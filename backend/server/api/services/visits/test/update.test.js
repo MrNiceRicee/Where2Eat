@@ -164,7 +164,7 @@ describe('Visits Update', () => {
     expect(result.spent).to.equal('9.99');
   });
 
-  it('success! one update', async () => {
+  it('success! multiple update', async () => {
     await update(visits.two._id, {
       spent: 99.99,
       visited_at: '2015-10-01',
@@ -173,10 +173,8 @@ describe('Visits Update', () => {
       SQL`SELECT * FROM "Visits" WHERE "_id"=${visits.two._id}`
     );
     expect(result.spent).to.equal('99.99');
-    console.log(result.visited_at);
-
-    expect(result.visited_at).to.equal(
-      DateTime.fromISO('2015-10-01T07:00:00.000Z').toLocal()
+    expect(DateTime.fromJSDate(result.visited_at).toISODate()).to.equal(
+      DateTime.fromISO('2015-10-01T07:00:00.000Z').toISODate()
     );
   });
 });
