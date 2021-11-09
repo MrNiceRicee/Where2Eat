@@ -9,6 +9,9 @@ const routes = (router, prefix) => {
 
   // yelp api
   router.get(`${prefix}/search`, controller.search);
+
+  // update
+  router.put(`${prefix}/:id`, controller.update)
 };
 
 module.exports = routes;

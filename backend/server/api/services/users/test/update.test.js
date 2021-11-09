@@ -44,7 +44,7 @@ describe('Users Update', () => {
 
   it('Error no user found', async () => {
     try {
-      await update(-100, { update: { name: 'should fail' } });
+      await update(-100, { name: 'should fail' });
       expect(true).to.be.false; // just in case it doesn't fail
     } catch (err) {
       expect(err).to.deep.equal({
@@ -56,7 +56,7 @@ describe('Users Update', () => {
 
   it('Error Update package', async () => {
     try {
-      await update(users.one._id, { update: { banana: 'Updated Name' } });
+      await update(users.one._id, { banana: 'Updated Name' });
       expect(true).to.be.false; // just in case it doesn't fail
     } catch (err) {
       expect(err).to.deep.equal({
@@ -67,7 +67,7 @@ describe('Users Update', () => {
   });
 
   it('Update name', async () => {
-    await update(users.one._id, { update: { name: 'Updated Name' } });
+    await update(users.one._id, { name: 'Updated Name' });
     const find = await queryOne(
       SQL`SELECT * FROM "Users" WHERE "_id"=${users.one._id}`
     );
@@ -76,7 +76,9 @@ describe('Users Update', () => {
 
   it('Update multiple', async () => {
     await update(users.two._id, {
-      update: { name: 'Updated Name2', budget: 49.99, budget_time: 'weekly' },
+      name: 'Updated Name2',
+      budget: 49.99,
+      budget_time: 'weekly',
     });
     const find = await queryOne(
       SQL`SELECT * FROM "Users" WHERE "_id"=${users.two._id}`

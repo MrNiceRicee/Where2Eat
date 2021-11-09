@@ -3,7 +3,7 @@ const { queryOne, ErrorException, validation } = require('../../helpers');
 const { missingValidation } = validation;
 const editable = { name: true, budget: true, budget_time: true };
 
-const update = async (id, { update } = {}) => {
+const update = async (id, update ) => {
   missingValidation(id, 'ID', 400);
   missingValidation(update, 'update package', 400);
 
@@ -15,16 +15,25 @@ const update = async (id, { update } = {}) => {
   const query = SQL`
       UPDATE "Users"
         SET `;
-  let filter = SQL` WHERE "_id"=${id} `;
-
   const updateKeys = Object.keys(update);
-  const acceptedKeys = updateKeys.map((item) => {
+  const validated = [];
+  updateKeys.forEach((item) => {
     if (!editable[item]) {
       throw new ErrorException('Invalid Update', 400);
     }
-    return (` "${item}"='${update[item]}' `);
+    if (!update[item]) {
+      throw new ErrorException('Missing Update Details', 400);
+    }
+    validated.push(item);
   });
-  query.append(acceptedKeys.join(' , '));
+  validated.forEach((item, index) => {
+    query.append(` ${item}=`);
+    query.append(SQL`${update[item]}`);
+    if (index < validated.length - 1) {
+      query.append(',');
+    }
+  });
+  const filter = SQL` WHERE "_id"=${id} `;
   query.append(filter);
   await queryOne(query);
   return {
