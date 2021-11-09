@@ -17,7 +17,7 @@ const update = async (id, update) => {
   missingValidation(update, 'Update Package', 400);
 
   const checkDB = await queryOne(
-    SQL`SELECT "_id", "name" FROM "Restaurants" WHERE "_id"=${id}`
+    SQL`SELECT "_id" FROM "Restaurants" WHERE "_id"=${id}`
   );
   if (!checkDB) throw new ErrorException('No Restaurant found', 204);
 
@@ -26,6 +26,7 @@ const update = async (id, update) => {
     SET `;
 
   const updateKeys = Object.keys(update);
+  const validated = [];
   updateKeys.forEach((item) => {
     if (!editable[item]) {
       throw new ErrorException('Invalid Update', 400);
@@ -33,8 +34,14 @@ const update = async (id, update) => {
     if (!update[item]) {
       throw new ErrorException('Missing Update Details', 400);
     }
-    query.append(` ${item}`);
-    query.append(SQL`=${update[item]} `);
+    validated.push(item);
+  });
+  validated.forEach((item, index) => {
+    query.append(` ${item}=`);
+    query.append(SQL`${update[item]}`);
+    if (index < validated.length - 1) {
+      query.append(',');
+    }
   });
   const filter = SQL` WHERE "_id"=${id} `;
   query.append(filter);

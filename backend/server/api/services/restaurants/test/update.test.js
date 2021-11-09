@@ -87,4 +87,13 @@ describe('Restaurants Update', () => {
     );
     expect(result.name).to.equal("Eonni's noodles");
   });
+
+  it('success! one update', async () => {
+    await update(data.one._id, { name: `Eonni's noodles`, rating: 5 });
+    const result = await queryOne(
+      SQL`SELECT * FROM "Restaurants" WHERE "_id"=${data.one._id}`
+    );
+    expect(result.name).to.equal("Eonni's noodles");
+    expect(result.rating).to.equal("5");
+  });
 });

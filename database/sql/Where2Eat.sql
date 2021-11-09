@@ -123,7 +123,8 @@ CREATE TABLE public."Visits" (
     user_id integer NOT NULL,
     restaurant_id character varying(255),
     spent numeric DEFAULT 0,
-    visited_at date DEFAULT NOW()
+    visited_at date DEFAULT NOW(),
+    constraint spent_nonnegative check (spent >= 0)
 );
 
 
