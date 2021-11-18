@@ -34,9 +34,13 @@ const all = async ({ id }) => {
     "Visit".visited_at DESC
   `;
 
+  let sumQuery = SQL`SELECT SUM(spent) FROM "Visits" WHERE "Visits"."user_id"=${id}`;
+
   const data = await queryRows(query);
+  const { sum } = await queryOne(sumQuery);
   return {
     total: data.length,
+    totalSpend: sum,
     data: data.map((item) => {
       return {
         Visit_human_time: format.visit.humanTime(item.Visit_visited_at),

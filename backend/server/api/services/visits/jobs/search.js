@@ -58,6 +58,13 @@ const search = async ({ user_id, restaurant_id, time, startTime, endTime }) => {
       "restaurant_id"=${restaurant_id} AND
       "user_id"=${user_id}
   `;
+  const queryVisitSpent = SQL`
+    SELECT sum(spent) 
+    FROM "Visits"
+    WHERE
+      "restaurant_id"=${restaurant_id} AND
+      "user_id"=${user_id}
+    `
   const queryVisits = SQL`
     SELECT
       "_id",
@@ -74,12 +81,15 @@ const search = async ({ user_id, restaurant_id, time, startTime, endTime }) => {
   const visits = await queryRows(queryVisits);
 
   queryVisitsCount.append(getTime({ time, startTime, endTime }));
+  queryVisitSpent.append(getTime({ time, startTime, endTime }));
   const { count } = await queryOne(queryVisitsCount);
+  const { sum } = await queryOne(queryVisitSpent);
 
   return {
     total: count,
     data: {
       Restaurant: restaurants,
+      Visits_Spent: sum,
       Visits: visits.map((item) => format.visit.time(item)),
     },
   };

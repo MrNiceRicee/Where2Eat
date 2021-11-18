@@ -210,6 +210,7 @@ describe('Visits Search', () => {
       // time: 'monthly',
     });
     expect(Big(res.total).eq(2)).true;
+    expect(Big(getVisitTotal(res.data.Visits)).eq(res.data.Visits_Spent)).true;
     validateRestaurant(res.data.Restaurant, data.restaurants.one);
     expect(res.data.Visits.length).to.equal(2);
     expect(res.data.Visits).to.deep.include.members([
@@ -226,6 +227,7 @@ describe('Visits Search', () => {
     });
     validateRestaurant(res.data.Restaurant, data.restaurants.one);
     expect(res.data.Visits.length).to.equal(3);
+    expect(Big(getVisitTotal(res.data.Visits)).eq(res.data.Visits_Spent)).true;
     expect(res.data.Visits).to.deep.include.members([
       format.visit.time(data.visits.four),
       format.visit.time(data.visits.five),
@@ -240,6 +242,7 @@ describe('Visits Search', () => {
       time: 'monthly',
     });
     validateRestaurant(res.data.Restaurant, data.restaurants.one);
+    expect(Big(getVisitTotal(res.data.Visits)).eq(res.data.Visits_Spent)).true;
     expect(res.data.Visits.length).to.equal(4);
     expect(res.data.Visits).to.deep.include.members([
       format.visit.time(data.visits.four),
@@ -258,6 +261,7 @@ describe('Visits Search', () => {
       endTime: DateTime.now().minus({ days: 24 }).toISODate(),
     });
     validateRestaurant(res.data.Restaurant, data.restaurants.one);
+    expect(Big(getVisitTotal(res.data.Visits)).eq(res.data.Visits_Spent)).true;
     expect(res.data.Visits.length).to.equal(1);
     expect(res.data.Visits).to.deep.include.members([
       format.visit.time(data.visits.one),
@@ -275,4 +279,11 @@ const validateRestaurant = (validate, compare) => {
   expect(validate.rating).to.equal(compare.rating);
   expect(validate.review_count).to.equal(compare.review_count);
   expect(validate.url).to.equal(compare.url);
+};
+
+const getVisitTotal = (visits) => {
+  return visits.reduce(
+    (prev, curr) => Big(prev).plus(curr.spent).toNumber(),
+    0
+  );
 };
