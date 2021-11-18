@@ -6,7 +6,8 @@
   "scripts": {
     "test": "export RUN_ENV=test; mocha './server/**/*.test.js' --bail -t 5000 -s 250",
     "start-dev": "nodemon server",
-    "start": "node server"
+    "start": "node server",
+    "stress-test": "k6 run stress_test/index.js"
   },
   "repository": {
     "type": "git",
