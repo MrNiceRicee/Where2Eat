@@ -2,7 +2,7 @@ const { all, create, search, update } = require('./jobs');
 const { handleError, handleResponse } = require('../helpers');
 
 exports.all = (req, res) => {
-  all({ id: req.params }).then(handleResponse(res)).catch(handleError(res));
+  all({ id: req.params.id }).then(handleResponse(res)).catch(handleError(res));
 };
 
 exports.create = (req, res) => {

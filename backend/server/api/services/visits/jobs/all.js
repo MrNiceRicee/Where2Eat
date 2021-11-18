@@ -1,10 +1,7 @@
 const SQL = require('sql-template-strings');
-const {
-  queryRows,
-  queryOne,
-  validation,
-} = require('../../helpers');
+const { queryRows, queryOne, validation } = require('../../helpers');
 const { missingValidation } = validation;
+const { format } = require('../util');
 
 const all = async ({ id }) => {
   missingValidation(id, 'User ID', 400);
@@ -18,9 +15,10 @@ const all = async ({ id }) => {
 
   let query = SQL`
   SELECT
-    "Visit"."spent",
-    "Visit"."visited_at",
-    "User"."name" as "User_name",
+    "Visit"."visited_at" as "Visit_visited_at",
+    "Visit"."spent" "Visit_spent",
+    "Visit"."_id" as "Visit_id",
+    "Restaurant"."_id" as "Restaurant_id",
     "Restaurant"."name" as "Restaurant_name",
     "Restaurant"."image_url" as "Restaurant_image_url",
     "Restaurant"."price" as "Restaurant_price",
@@ -29,11 +27,9 @@ const all = async ({ id }) => {
     "Restaurant"."url" as "Restaurant_url"
 
   FROM "Visits" "Visit"
-  LEFT JOIN "Users" "User"
-    ON "User"."_id"="Visit"."user_id"
   LEFT JOIN "Restaurants" "Restaurant"
     ON "Restaurant"."_id"="Visit"."restaurant_id"
-  WHERE "User"._id=${id}
+  WHERE "Visit"."user_id"=${id}
   ORDER BY
     "Visit".visited_at DESC
   `;
@@ -41,7 +37,12 @@ const all = async ({ id }) => {
   const data = await queryRows(query);
   return {
     total: data.length,
-    data,
+    data: data.map((item) => {
+      return {
+        Visit_human_time: format.visit.humanTime(item.Visit_visited_at),
+        ...item,
+      };
+    }),
   };
 };
 

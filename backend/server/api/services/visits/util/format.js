@@ -12,8 +12,14 @@ const visit = {
     visitation.visited_at = newTime;
     visitation.spent = item.spent;
     visitation._id = item._id;
-    // delete unnecessary items
     return visitation;
+  },
+  humanTime: (time) => {
+    const human_time = DateTime.fromJSDate(time);
+    if (human_time.hasSame(DateTime.now(), 'day')) {
+      return 'today';
+    }
+    return human_time.toRelative();
   },
 };
 

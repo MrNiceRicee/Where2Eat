@@ -4,6 +4,7 @@ const { create } = require('../jobs');
 const { queryOne } = require('../../helpers');
 const { expect } = require('chai');
 const { create: helpCreate, delete: Delete } = require('../../helpers/test');
+const { DateTime } = require('luxon');
 
 describe('Visits Create', () => {
   let data = {
@@ -83,6 +84,42 @@ describe('Visits Create', () => {
     }
   });
 
+  it('error date not valid', async () => {
+    try {
+      await create({
+        user_id: data.users.one._id,
+        restaurant_id: data.restaurants.one._id,
+        spent: 0,
+        visited_at: 1,
+      });
+      expect(true).to.be.false;
+    } catch (err) {
+      expect(err).to.be.a('object');
+      expect(err).to.deep.equal({
+        message: 'Invalid Visit Date',
+        statusCode: 400,
+      });
+    }
+  })
+
+  it('error date futured', async () => {
+    try {
+      await create({
+        user_id: data.users.one._id,
+        restaurant_id: data.restaurants.one._id,
+        spent: 0,
+        visited_at: DateTime.now().plus({days: 2}).toISODate(),
+      });
+      expect(true).to.be.false;
+    } catch (err) {
+      expect(err).to.be.a('object');
+      expect(err).to.deep.equal({
+        message: 'Date cannot be set in the future',
+        statusCode: 400,
+      });
+    }
+  })
+
   it('error User not found', async () => {
     try {
       await create({
@@ -95,7 +132,7 @@ describe('Visits Create', () => {
       expect(err).to.be.a('object');
       expect(err).to.deep.equal({
         message: 'User not found',
-        statusCode: 204,
+        statusCode: 404,
       });
     }
   });
@@ -112,7 +149,7 @@ describe('Visits Create', () => {
       expect(err).to.be.a('object');
       expect(err).to.deep.equal({
         message: 'Restaurant not found',
-        statusCode: 204,
+        statusCode: 404,
       });
     }
   });

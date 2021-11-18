@@ -1,4 +1,5 @@
 const SQL = require('sql-template-strings');
+const Big = require('big.js');
 const { DateTime } = require('luxon');
 const { expect } = require('chai');
 const { search } = require('../jobs');
@@ -92,7 +93,7 @@ describe('Visits Search', () => {
     } catch (err) {
       expect(err).to.deep.equal({
         message: 'User not found',
-        statusCode: 204,
+        statusCode: 404,
       });
     }
   });
@@ -107,7 +108,7 @@ describe('Visits Search', () => {
     } catch (err) {
       expect(err).to.deep.equal({
         message: 'Restaurant not found',
-        statusCode: 204,
+        statusCode: 404,
       });
     }
   });
@@ -208,8 +209,8 @@ describe('Visits Search', () => {
       restaurant_id: data.restaurants.one._id,
       // time: 'monthly',
     });
-    validateRestaurant(res.data, data.restaurants.one);
-
+    expect(Big(res.total).eq(2)).true;
+    validateRestaurant(res.data.Restaurant, data.restaurants.one);
     expect(res.data.Visits.length).to.equal(2);
     expect(res.data.Visits).to.deep.include.members([
       format.visit.time(data.visits.four),
@@ -223,7 +224,7 @@ describe('Visits Search', () => {
       restaurant_id: data.restaurants.one._id,
       time: 'weekly',
     });
-    validateRestaurant(res.data, data.restaurants.one);
+    validateRestaurant(res.data.Restaurant, data.restaurants.one);
     expect(res.data.Visits.length).to.equal(3);
     expect(res.data.Visits).to.deep.include.members([
       format.visit.time(data.visits.four),
@@ -238,7 +239,7 @@ describe('Visits Search', () => {
       restaurant_id: data.restaurants.one._id,
       time: 'monthly',
     });
-    validateRestaurant(res.data, data.restaurants.one);
+    validateRestaurant(res.data.Restaurant, data.restaurants.one);
     expect(res.data.Visits.length).to.equal(4);
     expect(res.data.Visits).to.deep.include.members([
       format.visit.time(data.visits.four),
@@ -256,7 +257,7 @@ describe('Visits Search', () => {
       startTime: DateTime.now().minus({ months: 2 }).toISODate(),
       endTime: DateTime.now().minus({ days: 24 }).toISODate(),
     });
-    validateRestaurant(res.data, data.restaurants.one);
+    validateRestaurant(res.data.Restaurant, data.restaurants.one);
     expect(res.data.Visits.length).to.equal(1);
     expect(res.data.Visits).to.deep.include.members([
       format.visit.time(data.visits.one),

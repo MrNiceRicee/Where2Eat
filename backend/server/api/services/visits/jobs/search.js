@@ -16,7 +16,7 @@ const search = async ({ user_id, restaurant_id, time, startTime, endTime }) => {
   const userTime = await queryOne(
     SQL`SELECT "budget_time" FROM "Users" WHERE "_id"=${user_id}`
   );
-  missingValidation(userTime, '', 204, 'User not found');
+  missingValidation(userTime, '', 404, 'User not found');
 
   let query = SQL`
     SELECT
@@ -37,7 +37,7 @@ const search = async ({ user_id, restaurant_id, time, startTime, endTime }) => {
 
   const restaurants = await queryOne(query);
   if (!restaurants) {
-    throw new ErrorException('Restaurant not found', 204);
+    throw new ErrorException('Restaurant not found', 404);
   }
 
   // if there is a defined time, go with it unless
@@ -47,10 +47,17 @@ const search = async ({ user_id, restaurant_id, time, startTime, endTime }) => {
   if (time === 'custom') {
     missingValidation(startTime, 'Start Date', 400);
     missingValidation(endTime, 'End Date', 400);
-    isValidDate(startTime, 'Start')
-    isValidDate(endTime, 'End')
+    isValidDate(startTime, 'Start');
+    isValidDate(endTime, 'End');
   }
 
+  const queryVisitsCount = SQL`
+    SELECT count(*)
+    FROM "Visits"
+    WHERE
+      "restaurant_id"=${restaurant_id} AND
+      "user_id"=${user_id}
+  `;
   const queryVisits = SQL`
     SELECT
       "_id",
@@ -64,12 +71,17 @@ const search = async ({ user_id, restaurant_id, time, startTime, endTime }) => {
   `;
   queryVisits.append(getTime({ time, startTime, endTime }));
   queryVisits.append(SQL`ORDER BY "visited_at" DESC`);
-  let visits = await queryRows(queryVisits);
-  visits = visits.map((item) => format.visit.time(item));
-  restaurants.Visits = visits;
+  const visits = await queryRows(queryVisits);
+
+  queryVisitsCount.append(getTime({ time, startTime, endTime }));
+  const { count } = await queryOne(queryVisitsCount);
 
   return {
-    data: restaurants,
+    total: count,
+    data: {
+      Restaurant: restaurants,
+      Visits: visits.map((item) => format.visit.time(item)),
+    },
   };
 };
 
